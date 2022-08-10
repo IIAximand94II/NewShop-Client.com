@@ -5,33 +5,39 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: () => import('../views/main/HomeComponent.vue')
+      component: () => import('../views/main/HomeComponent.vue'),
+      name: 'main.index',
     },
     {
       path: '/about',
-      name: 'about',
-      component: () => import('../views/about/AboutComponent.vue')
+      component: () => import('../views/about/AboutComponent.vue'),
+      name: 'main.about',
     },
     {
       path: '/faq',
-      name: 'faq',
-      component: () => import('../views/faq/FaqComponent.vue')
+      component: () => import('../views/faq/FaqComponent.vue'),
+      name: 'main.faq',
     },
     {
       path: '/shop',
-      name: 'shop',
-      component: () => import('../views/shop/IndexComponent.vue')
+      component: () => import('../views/shop/IndexComponent.vue'),
+      name: 'shop.index',
+    },
+    {
+      path: '/product/:id',
+      component: () => import('../views/product/IndexComponent.vue'),
+      name: 'product.index',
     },
     {
       path: '/personal',
-      name: 'personal',
-      component: () => import('../views/personal/IndexComponent.vue')
+      component: () => import('../views/personal/IndexComponent.vue'),
+      name: 'personal.index',
     },
     {
-      path: '/product',
-      name: 'product',
-      component: () => import('../views/product/IndexComponent.vue')
+      path: '/:pathMatch(.*)*',
+      component: () => import('../views/404/IndexComponent.vue'),
+      name: '404.show',
+
     },
   ]
 })

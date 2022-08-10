@@ -26,20 +26,20 @@
 
               <!-- Home -->
               <li class="dropdown ">
-                <router-link to="/">Home</router-link>
+                <router-link :to="{name:'main.index'}">Home</router-link>
               </li><!-- / Home -->
 
 
               <!-- Shop -->
               <li class="dropdown ">
-                <router-link to="/shop">Shop</router-link>
+                <router-link :to="{name:'shop.index'}">Shop</router-link>
               </li>
               <!-- / Shop -->
 
 
               <!-- Personal -->
               <li class="dropdown ">
-                <router-link to="/personal">Personal</router-link>
+                <router-link :to="{name:'personal.index'}">Personal</router-link>
               </li>
               <!-- / Personal -->
 
@@ -61,11 +61,11 @@
 
 
               <li class="dropdown ">
-                <router-link to="/about">About</router-link>
+                <router-link :to="{name:'main.about'}">About</router-link>
               </li><!-- / About -->
 
               <li class="dropdown ">
-                <router-link to="/faq">FAQ</router-link>
+                <router-link :to="{name:'main.faq'}">FAQ</router-link>
               </li><!-- / FAQ -->
 
             </ul><!-- / .nav .navbar-nav -->
