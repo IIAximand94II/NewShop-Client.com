@@ -75,7 +75,7 @@
                           <p v-html="product.excerpt" class="product-short-description">
 
                           </p>
-                          <a href="cart.html" class="btn btn-main">Add To Cart</a>
+                          <a href="#" class="btn btn-main">Add To Cart</a>
                           <router-link :to="{name:'product.index', params:{id:product.id}}" class="btn btn-transparent">View Product Details</router-link>
                         </div>
                       </div>
@@ -99,13 +99,15 @@ export default {
   name: "IndexComponent",
 
   mounted(){
-    $(document).trigger('change')
+      $(document).trigger('change')
       this.getProducts()
+      this.getFilters()
   },
 
   data(){
       return {
           products: [],
+          filters: [],
       }
   },
 
@@ -117,6 +119,14 @@ export default {
               console.log(this.products);
           })
       },
+
+      getFilters(){
+          this.axios.get('http://127.0.0.1:8000/api/filters')
+          .then(res => {
+              //this.filters = res.data.data
+              console.log(res.data.data);
+          })
+      }
   },
 
   components: {FilterComponent}

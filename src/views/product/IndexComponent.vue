@@ -2,52 +2,41 @@
 
     <section class="single-product">
       <div class="container">
+        <!-- BreadCrumbs -->
         <div class="row">
           <div class="col-md-6">
             <ol class="breadcrumb">
-              <li><a href="../../../index.html">Home</a></li>
-              <li><a href="shop.html">Shop</a></li>
+              <li><a href="/">Home</a></li>
+              <li><a href="/shop">Shop</a></li>
               <li class="active">Single Product</li>
             </ol>
           </div>
           <div class="col-md-6">
             <ol class="product-pagination text-right">
-              <li><a href="blog-left-sidebar.html"><i class="tf-ion-ios-arrow-left"></i> Next </a></li>
-              <li><a href="blog-left-sidebar.html">Preview <i class="tf-ion-ios-arrow-right"></i></a></li>
+              <li><a href="#"><i class="tf-ion-ios-arrow-left"></i> Next </a></li>
+              <li><a href="#">Preview <i class="tf-ion-ios-arrow-right"></i></a></li>
             </ol>
           </div>
         </div>
 
 
 
-
         <div class="row mt-20">
           <div class="col-md-5">
+
+            <!-- Product gallery -->
             <div class="single-product-slider">
               <div id='carousel-custom' class='carousel slide' data-ride='carousel'>
                 <div class='carousel-outer'>
                   <!-- me art lab slider -->
+
                   <div class='carousel-inner '>
                     <div class='item active'>
-                      <img src='../../assets/images/shop/single-products/product-1.jpg' alt='' data-zoom-image="images/shop/single-products/product-1.jpg" />
+                      <img :src='product.title_image' alt='' data-zoom-image="images/shop/single-products/product-1.jpg" />
                     </div>
-                    <div class='item'>
-                      <img src='src/assets/images/shop/single-products/product-2.jpg' alt='' data-zoom-image="images/shop/single-products/product-2.jpg" />
+                    <div v-for="image in selectedProductGallery" class='item'>
+                      <img :src='image.image' alt='product image' data-zoom-image="images/shop/single-products/product-2.jpg" />
                     </div>
-
-                    <div class='item'>
-                      <img src='../../assets/images/shop/single-products/product-3.jpg' alt='' data-zoom-image="images/shop/single-products/product-3.jpg" />
-                    </div>
-                    <div class='item'>
-                      <img src='../../assets/images/shop/single-products/product-4.jpg' alt='' data-zoom-image="images/shop/single-products/product-4.jpg" />
-                    </div>
-                    <div class='item'>
-                      <img src='../../assets/images/shop/single-products/product-5.jpg' alt='' data-zoom-image="images/shop/single-products/product-5.jpg" />
-                    </div>
-                    <div class='item'>
-                      <img src='../../assets/images/shop/single-products/product-6.jpg' alt='' data-zoom-image="images/shop/single-products/product-6.jpg" />
-                    </div>
-
                   </div>
 
                   <!-- sag sol -->
@@ -62,55 +51,45 @@
                 <!-- thumb -->
                 <ol class='carousel-indicators mCustomScrollbar meartlab'>
                   <li data-target='#carousel-custom' data-slide-to='0' class='active'>
-                    <img src='../../assets/images/shop/single-products/product-1.jpg' alt='' />
+                    <img :src='product.preview_image' alt='' />
                   </li>
-                  <li data-target='#carousel-custom' data-slide-to='1'>
-                    <img src='../../assets/images/shop/single-products/product-2.jpg' alt='' />
-                  </li>
-                  <li data-target='#carousel-custom' data-slide-to='2'>
-                    <img src='../../assets/images/shop/single-products/product-3.jpg' alt='' />
-                  </li>
-                  <li data-target='#carousel-custom' data-slide-to='3'>
-                    <img src='../../assets/images/shop/single-products/product-4.jpg' alt='' />
-                  </li>
-                  <li data-target='#carousel-custom' data-slide-to='4'>
-                    <img src='../../assets/images/shop/single-products/product-5.jpg' alt='' />
-                  </li>
-                  <li data-target='#carousel-custom' data-slide-to='5'>
-                    <img src='../../assets/images/shop/single-products/product-6.jpg' alt='' />
-                  </li>
-                  <li data-target='#carousel-custom' data-slide-to='6'>
-                    <img src='src/assets/images/shop/single-products/product-7.jpg' alt='' />
+                  <li v-for="preview_img in selectedProductGallery" data-target='#carousel-custom' data-slide-to='1'>
+                    <img :src='preview_img.image' alt='product image' />
                   </li>
                 </ol>
               </div>
             </div>
+            <!-- /. End Product gallery -->
+
           </div>
           <div class="col-md-7">
             <div class="single-product-details">
               <h2>{{ product.title}}</h2>
-              <p class="product-price">${{ product.price }}</p>
+              <p class="product-price">${{ selectedProduct.price }}</p>
 
               <p v-html="product.description" class="product-description mt-20">
               </p>
               <div class="color-swatches">
                 <span>color:</span>
                 <ul>
-                  <li v-for="color in product.colors" class="mr-1">
-                    <button :style="`width: 36px; height: 36px; background-color: ${color.hex}; border: none; margin-right: 4px`" :title="color.title"></button>
-                  </li>
+                  <template v-for="product_group in products_group">
+                      <li v-for="p_color in product_group.color">
+                        <a @click.prevent="changeSelectedProduct(product_group)" href="#" :style="`width: 26px; height: 26px; background-color: ${p_color.hex}; border: none; margin-right: 3px`" :title="p_color.title"></a>
+                      </li>
+                  </template>
+
                 </ul>
               </div>
               <div class="product-size">
                 <span>Size:</span>
-                <select class="form-control">
-                  <option v-for="size in product.sizes">{{ size.size }}</option>
+                <select @change="changeSize($event)" class="form-control">
+                  <option  v-for="size in selectedProduct.sizes" :value="size.id">{{ size.size }}</option>
                 </select>
               </div>
               <div class="product-quantity">
                 <span>Quantity:</span>
                 <div class="product-quantity-slider">
-                  <input id="product-quantity" type="text" value="0" name="product-quantity">
+                  <input id="product-quantity" type="number" value="0" min="0" max="{{ maxQuantity }}" name="product-quantity">
                 </div>
               </div>
               <div class="product-category">
@@ -119,7 +98,7 @@
                   <li v-for="tag in product.tags"><a href="">{{ tag.title }}</a></li>
                 </ul>
               </div>
-              <a href="#" class="btn btn-main mt-20">Add To Cart</a>
+              <a @click.prevent="printSelectedProduct" href="#" class="btn btn-main mt-20">Add To Cart</a>
             </div>
           </div>
         </div>
@@ -203,7 +182,7 @@
                 </div>
               </div>
               <div class="product-content">
-                <h4><a href="product-single.html">Reef Boardsport</a></h4>
+                <h4><a href="#">Reef Boardsport</a></h4>
                 <p class="price">$200</p>
               </div>
             </div>
@@ -281,7 +260,7 @@
                 </div>
               </div>
               <div class="product-content">
-                <h4><a href="product-single.html">Bradley Mid</a></h4>
+                <h4><a href="#">Bradley Mid</a></h4>
                 <p class="price">$200</p>
               </div>
             </div>
@@ -329,21 +308,86 @@ export default {
   data(){
       return{
           product:[],
+          products_group:[],
+          selectedProduct:[],
+          selectedProductGallery:[],
+
+          selectedSize:null,
+          allProductsSizes:[],
+          maxQuantity:3,
+          //countSelectedProductsAvailable:[],
       }
   },
 
   mounted() {
       $(document).trigger('change')
       this.getProduct()
+      this.quantityValidator()
   },
+
 
   methods:{
       getProduct(){
           this.axios.get(`http://127.0.0.1:8000/api/products/${this.$route.params.id}`)
           .then(res => {
-              this.product = res.data.data
-              console.log(this.product.reviews);
+              this.product = res.data.data;
+              this.products_group = res.data.data.group;
+              this.selectedProduct = this.products_group[0];
+              this.selectedProductGallery = this.selectedProduct.gallery
+              this.allProductsSizes = this.products_group[0].available_sizes;
+              this.maxQuantity = Number(this.allProductsSizes.length);
+              //console.log(this.product);
+              //console.log(this.products_group);
+              //console.log(this.allProductsSizes);
+              //console.log(this.maxQuantity);
+              console.log(this.product);
           })
+      },
+
+      changeSelectedProduct(product){
+          this.selectedProduct = product;
+          this.selectedProductGallery = product.gallery
+          this.allProductsSizes = this.selectedProduct.available_sizes;
+          this.maxQuantity = this.allProductsSizes.length;
+          //console.log(this.selectedProductGallery)
+      },
+
+      changeSize(event){
+          console.log('change size');
+          let arr = [];
+          this.selectedSize = event.target.value
+
+
+          this.selectedProduct.available_sizes.forEach(elem => {
+
+              // all product_size == selected size
+              if(elem.id == this.selectedSize){
+                  arr.push(elem)
+              }
+          });
+          //this.maxQuantity = arr.length
+          console.log(this.maxQuantity);
+
+      },
+
+      printSelectedProduct(){
+          console.log(this.selectedProduct);
+      },
+
+      addToCard(){
+          console.log('Add tot card');
+      },
+
+      quantityValidator(){
+          const input = document.querySelector('#product-quantity');
+          const min = +input.min;
+          const max = +input.max;
+
+          input.addEventListener('input', (e) => {
+            const value = +input.value;
+            if (value > max) { input.value = max }
+            else if (value < min) { input.value = min }
+        })
       },
 
   }
