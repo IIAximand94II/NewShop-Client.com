@@ -20,7 +20,7 @@
       <div class="row">
         <div class="col-md-3">
 
-            <FilterComponent></FilterComponent>
+            <FilterComponent ref="filters"></FilterComponent>
 
         </div>
         <div class="col-md-9">
@@ -101,32 +101,43 @@ export default {
   mounted(){
       $(document).trigger('change')
       this.getProducts()
-      this.getFilters()
+      this.getPrice()
+      //this.$store.dispatch('getProducts')
+      //this.getLogs()
   },
 
   data(){
       return {
           products: [],
-          filters: [],
+          minPrice:null,
+          maxPrice:null,
       }
   },
 
   methods:{
       getProducts(){
           this.axios.get('http://127.0.0.1:8000/api/products')
-          .then(res => {
-              this.products = res.data.data;
-              console.log(this.products);
-          })
+              .then(res => {
+                  this.products = res.data.data;
+              })
+              .catch(error => {
+                  console.log(error);
+              })
       },
 
-      getFilters(){
-          this.axios.get('http://127.0.0.1:8000/api/filters')
+    getPrice(){
+      this.axios.get('http://127.0.0.1:8000/api/filters')
           .then(res => {
-              //this.filters = res.data.data
-              console.log(res.data.data);
+            //console.log(res.data)
+            this.minPrice = res.data.price.min_price
+            this.maxPrice = res.data.price.max_price
+            //console.log(this.minPrice, this.maxPrice)
           })
-      }
+          .catch(error => {
+            console.log(error);
+          })
+    },
+
   },
 
   components: {FilterComponent}

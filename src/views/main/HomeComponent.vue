@@ -294,6 +294,14 @@ export default {
   name: "HomeComponent",
   mounted() {
     $(document).trigger('change')
+    this.$store.dispatch('getHits')
+    this.getLogs()
+  },
+
+  methods:{
+      getLogs(){
+          console.log(this.$store.state.products.hits);
+      },
   },
   components: {CategoryComponent, SliderComponent},
 }
