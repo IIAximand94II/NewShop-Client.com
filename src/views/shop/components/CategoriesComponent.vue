@@ -15,7 +15,7 @@
             <template v-for="children_cat in category.children">
                 <li>{{ children_cat.title }}</li>
                 <template v-for="child_cat in children_cat.children">
-                  <li> - <input type="checkbox" v-model="selectedCategories" :value="child_cat.id" @change="printCheck"> child</li>
+                  <li> - <input type="checkbox" v-model="selectedCategories" :value="child_cat.id"> {{ child_cat.title }}</li>
                 </template>
             </template>
 
@@ -52,10 +52,6 @@ export default {
             console.log(error);
           })
     },
-
-    printCheck(){
-      //console.log('checked!')
-    }
   }
 }
 </script>

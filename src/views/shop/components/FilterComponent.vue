@@ -88,6 +88,10 @@
         <div style="margin-top: 50px">
           <button @click.prevent="filterProducts" class="btn btn-secondary">Apply Filters</button>
         </div>
+
+        <div style="margin-top: 50px">
+          <button @click.prevent="printSelectedFilters" class="btn btn-primary">Print Filters</button>
+        </div>
     </div>
 </template>
 
@@ -179,35 +183,33 @@ export default {
       },
 
     filterProducts(){
-        // console.log('Selected gender:', this.gender);
-        // console.log('Selected categories:', this.$refs.categories.selectedCategories);
-        // console.log('Selected colors:', this.selectedColors);
-        // console.log('Selected sizes:', this.selectedSizes);
-        // console.log('Selected availability:', this.availability);
-        // console.log(`Selected price, min: ${this.minPriceValue}; max: ${this.maxPriceValue}`);
-        // console.log('Selected tags:', this.$refs.tags.selectedTags);
-
-        let price = {
-            min_price: this.minPriceValue,
-            max_price: this.maxPriceValue,
-        }
-
-        //console.log(price)
-        this.axios.post('http://127.0.0.1:8000/api/products/filters', {
-          'gender':this.gender,
+        let price = [parseFloat(this.minPriceValue).toFixed(2), parseFloat(this.maxPriceValue).toFixed(2)];
+        this.axios.post('http://127.0.0.1:8000/api/products', {
+          'gender': Number(this.gender),
           'categories':this.$refs.categories.selectedCategories,
           'colors':this.selectedColors,
           'sizes':this.selectedSizes,
-          'availability':this.availability,
-          'price':this.price,
+          'existence':this.availability,
+          'price': price,
           'tags':this.$refs.tags.selectedTags,
         })
             .then(res => {
+              this.$parent.$data.products = res.data.data
               console.log(res);
             })
             .catch(error => {
               console.log(error);
             })
+      },
+
+      printSelectedFilters(){
+        console.log('Selected gender:', this.gender);
+        console.log('Selected categories:', this.$refs.categories.selectedCategories);
+        console.log('Selected colors:', this.selectedColors);
+        console.log('Selected sizes:', this.selectedSizes);
+        console.log('Selected availability:', this.availability);
+        console.log(`Selected price, min: ${this.minPriceValue}; max: ${this.maxPriceValue}`);
+        console.log('Selected tags:', this.$refs.tags.selectedTags);
       }
 
   }
