@@ -84,9 +84,9 @@ import CategoryComponent from "./components/CategoryComponent.vue";
 export default {
   name: "HomeComponent",
   mounted() {
-    $(document).trigger('change')
+    $(document).trigger('change');
     //this.$store.dispatch('getHits')
-    this.getHits()
+    this.getHits();
   },
 
   data(){
@@ -105,7 +105,8 @@ export default {
             .catch(error => {
               console.log(error);
             })
-      }
+      },
+
   },
   components: {CategoryComponent, SliderComponent},
 }

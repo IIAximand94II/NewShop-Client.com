@@ -49,10 +49,20 @@
                 </div>
                 <div class="product-content">
                   <h4><router-link :to="{name:'product.index', params:{id:product.id}}">{{ product.title }}</router-link></h4>
-                  <p class="price">${{ product.price }}</p>
+                  <p class="price">${{ product.group_min_price }} - ${{ product.group_max_price }}</p>
                 </div>
               </div>
             </div>
+
+            <!-- Pagination -->
+            <div class="text-center">
+              <ul class="pagination post-pagination">
+                <li v-for="link in links">
+                  <a @click.prevent="getProducts(link.label)" v-html="link.label" :class="(link.active)?'active-link':''"></a>
+                </li>
+              </ul>
+            </div>
+            <!-- /. Pagination -->
 
             <!-- Modal -->
             <div v-for="product in products" class="modal product-modal fade" :id="`product-modal-${product.id}`">
@@ -71,7 +81,7 @@
                       <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="product-short-details">
                           <h2 class="product-title">{{ product.title }}, Basalt Grey</h2>
-                          <p class="product-price">${{ product.price }}</p>
+                          <p class="product-price">${{ product.group_min_price }} - ${{ product.group_max_price }}</p>
                           <p v-html="product.excerpt" class="product-short-description">
 
                           </p>
@@ -86,6 +96,8 @@
             </div><!-- /.modal -->
 
           </div>
+
+
         </div>
 
       </div>
@@ -100,44 +112,45 @@ export default {
 
   mounted(){
       $(document).trigger('change')
-      this.getProducts()
-      this.getPrice()
-      //this.$store.dispatch('getProducts')
-      //this.getLogs()
+      this.getProducts();
   },
 
   data(){
       return {
           products: [],
-          minPrice:null,
-          maxPrice:null,
+          links:[],
+          price:[],
       }
   },
 
   methods:{
-      getProducts(){
-          this.axios.post('http://127.0.0.1:8000/api/products',{})
+      getProducts(page = 1){
+          this.axios.post('http://127.0.0.1:8000/api/products',{
+            'page':Number(page),
+            'gender': Number(this.$refs.filters.gender),
+            'categories':this.$refs.filters.$refs.categories.selectedCategories,
+            'colors':this.$refs.filters.selectedColors,
+            'sizes':this.$refs.filters.selectedSizes,
+            'existence':this.$refs.filters.availability,
+            'price': this.price,
+            'tags':this.$refs.filters.$refs.tags.selectedTags,
+          })
               .then(res => {
                   this.products = res.data.data;
+                  this.links = res.data.meta.links
+                  console.log(this.links);
+                  console.log(res);
               })
               .catch(error => {
                   console.log(error);
               })
       },
 
-    getPrice(){
-      this.axios.get('http://127.0.0.1:8000/api/filters')
-          .then(res => {
-            //console.log(res.data)
-            this.minPrice = res.data.price.min_price
-            this.maxPrice = res.data.price.max_price
-            //console.log(this.minPrice, this.maxPrice)
-          })
-          .catch(error => {
-            console.log(error);
-          })
-    },
+      filterProducts(page = 1){
+        this.price = [parseFloat(this.$refs.filters.minPriceValue).toFixed(2), parseFloat(this.$refs.filters.maxPriceValue).toFixed(2)];
 
+        this.getProducts();
+      },
   },
 
   components: {FilterComponent}
@@ -145,5 +158,8 @@ export default {
 </script>
 
 <style scoped>
-
+.active-link{
+  background-color: #0c0c0c;
+  color: #ffffff;
+}
 </style>

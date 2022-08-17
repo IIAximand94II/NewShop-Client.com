@@ -1,9 +1,12 @@
 <template>
-    <div class="tag-filter-container">
-        <h4 class="widget-title" style="margin-top: 20px">Tags</h4>
-          <div class="tag-container">
-                <a @click.prevent="addTag(tag.id)" v-for="tag in tags" class="btn btn-main btn-small">{{ tag.title }}</a>
-          </div>
+
+    <div class="widget widget-tag">
+      <h4 class="widget-title">Tags</h4>
+      <ul class="widget-tag-list">
+        <li v-for="tag in tags">
+          <a @click.prevent="addTag(tag.id)" href="#">{{ tag.title }}</a>
+        </li>
+      </ul>
     </div>
 
 </template>
@@ -41,14 +44,9 @@ export default {
 </script>
 
 <style scoped>
-  .tag-filter-container{
-     margin-top: 60px;
+  .widget-tag{
+     margin-top: 80px;
   }
 
-  .btn{
-      margin: 3px;
-      font-size: 0.7em;
-      border-radius: 10px;
-  }
 
 </style>

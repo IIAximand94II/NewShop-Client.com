@@ -38,7 +38,30 @@
 
 <script>
 export default {
-  name: "SliderComponent"
+  name: "SliderComponent",
+
+  mounted() {
+    this.getSlider();
+  },
+
+  data(){
+    return{
+      sliders:[],
+    }
+  },
+
+  methods:{
+    getSlider(){
+      this.axios.get('http://127.0.0.1:8000/api/sliders')
+          .then(res => {
+            this.sliders = res.data.data;
+            //console.log(this.sliders);
+          })
+          .catch(error => {
+            console.log(error);
+          })
+    }
+  }
 }
 </script>
 

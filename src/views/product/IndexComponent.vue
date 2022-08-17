@@ -6,19 +6,20 @@
         <div class="row">
           <div class="col-md-6">
             <ol class="breadcrumb">
-              <li><a href="/">Home</a></li>
-              <li><a href="/shop">Shop</a></li>
+              <li><router-link :to="{name:'main.index'}">Home</router-link></li>
+              <li><router-link :to="{name:'shop.index'}">Shop</router-link></li>
               <li class="active">Single Product</li>
-            </ol>
-          </div>
-          <div class="col-md-6">
-            <ol class="product-pagination text-right">
-              <li><a href="#"><i class="tf-ion-ios-arrow-left"></i> Next </a></li>
-              <li><a href="#">Preview <i class="tf-ion-ios-arrow-right"></i></a></li>
             </ol>
           </div>
         </div>
 
+
+        <!-- alert message -->
+        <div class="alert alert-danger alert-common alert-dismissible hidden" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <i class="tf-ion-close-circled"></i><span>{{ errorMessage }}</span>
+        </div>
+        <!-- /. alert message -->
 
 
         <div class="row mt-20">
@@ -89,7 +90,7 @@
               <div class="product-quantity">
                 <span>Quantity:</span>
                 <div class="product-quantity-slider">
-                  <input id="product-quantity" type="number" value="0" min="0" max="{{ maxQuantity }}" name="product-quantity">
+                  <input id="product-quantity" type="number" v-model="selectedQuantity" min="0" max="{{ maxQuantity }}" name="product-quantity">
                 </div>
               </div>
               <div class="product-category">
@@ -98,7 +99,7 @@
                   <li v-for="tag in product.tags"><a href="">{{ tag.title }}</a></li>
                 </ul>
               </div>
-              <a @click.prevent="printSelectedProduct" href="#" class="btn btn-main mt-20">Add To Cart</a>
+              <a @click.prevent="addToCart(selectedProduct.id)" href="#" class="btn btn-main mt-20">Add To Cart</a>
             </div>
           </div>
         </div>
@@ -314,8 +315,9 @@ export default {
 
           selectedSize:null,
           allProductsSizes:[],
-          maxQuantity:3,
-          //countSelectedProductsAvailable:[],
+          maxQuantity:1,
+          selectedQuantity:1,
+          errorMessage:'Warning! Better check yourself.You are not looking too good',
       }
   },
 
@@ -335,12 +337,10 @@ export default {
               this.selectedProduct = this.products_group[0];
               this.selectedProductGallery = this.selectedProduct.gallery
               this.allProductsSizes = this.products_group[0].available_sizes;
+              this.selectedSize = this.products_group[0].sizes[0].id;
               this.maxQuantity = Number(this.allProductsSizes.length);
-              //console.log(this.product);
-              //console.log(this.products_group);
-              //console.log(this.allProductsSizes);
-              //console.log(this.maxQuantity);
-              console.log(this.product);
+              this.selectedSize = this.products_group[0].sizes[0].length;
+              console.log(this.products_group[0].available_sizes);
           })
       },
 
@@ -349,33 +349,20 @@ export default {
           this.selectedProductGallery = product.gallery
           this.allProductsSizes = this.selectedProduct.available_sizes;
           this.maxQuantity = this.allProductsSizes.length;
-          //console.log(this.selectedProductGallery)
+          //console.log(this.maxQuantity);
       },
 
       changeSize(event){
-          console.log('change size');
           let arr = [];
           this.selectedSize = event.target.value
-
-
           this.selectedProduct.available_sizes.forEach(elem => {
-
               // all product_size == selected size
               if(elem.id == this.selectedSize){
                   arr.push(elem)
               }
           });
-          //this.maxQuantity = arr.length
-          console.log(this.maxQuantity);
-
-      },
-
-      printSelectedProduct(){
-          console.log(this.selectedProduct);
-      },
-
-      addToCard(){
-          console.log('Add tot card');
+          this.maxQuantity = arr.length
+          //console.log(this.maxQuantity);
       },
 
       quantityValidator(){
@@ -389,6 +376,65 @@ export default {
             else if (value < min) { input.value = min }
         })
       },
+
+      addToCart(id){
+        // console.log(this.selectedProduct);
+        // console.log('Add to cart, id: '+id);
+        // console.log('color id: '+this.selectedProduct.color[0].id);
+        // console.log('size id: '+ this.selectedSize);
+
+        console.log('max quantity:'+this.maxQuantity)
+
+        let color = Number(this.selectedProduct.color[0].id)
+        let size = Number(this.selectedSize);
+        let qty = Number(this.selectedQuantity)??1;
+
+        // if(qty > this.maxQuantity){
+        //   console.log('qty > max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
+        //   return false;
+        //   qty = this.maxQuantity;
+        // }else{
+        //   console.log('qty < max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
+        // }
+
+        let cart = localStorage.getItem('cart');
+        let product = [{
+          'product_id': this.product.id,
+          'product_group_id':id,
+          'qty':(qty<=this.maxQuantity)?qty:this.maxQuantity,
+          'color':color,
+          'size':size,
+        }];
+
+        //console.log(size);
+        if(!cart){
+          localStorage.setItem('cart', JSON.stringify(product));
+        }else{
+          cart = JSON.parse(cart)
+          cart.forEach(elem =>{
+            if(elem.product_group_id === id && elem.size === size){
+              elem.qty = Number(elem.qty)+1
+              if(qty <= this.maxQuantity){
+                console.log('qty > max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
+                product = null
+              }else{
+                console.log('qty < max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
+                return false
+              }
+            }
+
+          })
+          Array.prototype.push.apply(cart, product);
+
+          localStorage.setItem('cart', JSON.stringify(cart))
+        }
+
+
+      },
+
+      // errorMessage(message=''){
+      //   const cont = document.querySelector('.alert-danger');
+      // }
 
   }
 }

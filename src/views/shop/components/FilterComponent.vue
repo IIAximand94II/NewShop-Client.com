@@ -86,7 +86,7 @@
         <TagComponent ref="tags" v-bind:tags="tags"></TagComponent>
 
         <div style="margin-top: 50px">
-          <button @click.prevent="filterProducts" class="btn btn-secondary">Apply Filters</button>
+          <button @click.prevent="this.$parent.filterProducts" class="btn btn-secondary">Apply Filters</button>
         </div>
 
         <div style="margin-top: 50px">
@@ -140,7 +140,7 @@ export default {
                 this.maxPrice = this.filters.price.max_price
                 this.minPriceValue = this.filters.price.min_price
                 this.maxPriceValue = this.filters.price.min_price+1
-                //console.log(this.filters.categories)
+                //console.log(res)
             })
             .catch(error => {
                 console.log(error);
@@ -182,25 +182,28 @@ export default {
         }
       },
 
-    filterProducts(){
-        let price = [parseFloat(this.minPriceValue).toFixed(2), parseFloat(this.maxPriceValue).toFixed(2)];
-        this.axios.post('http://127.0.0.1:8000/api/products', {
-          'gender': Number(this.gender),
-          'categories':this.$refs.categories.selectedCategories,
-          'colors':this.selectedColors,
-          'sizes':this.selectedSizes,
-          'existence':this.availability,
-          'price': price,
-          'tags':this.$refs.tags.selectedTags,
-        })
-            .then(res => {
-              this.$parent.$data.products = res.data.data
-              console.log(res);
-            })
-            .catch(error => {
-              console.log(error);
-            })
-      },
+    // filterProducts(page = 1){
+    //     let price = [parseFloat(this.minPriceValue).toFixed(2), parseFloat(this.maxPriceValue).toFixed(2)];
+    //     this.axios.post('http://127.0.0.1:8000/api/products', {
+    //       'gender': Number(this.gender),
+    //       'categories':this.$refs.categories.selectedCategories,
+    //       'colors':this.selectedColors,
+    //       'sizes':this.selectedSizes,
+    //       'existence':this.availability,
+    //       'price': price,
+    //       'tags':this.$refs.tags.selectedTags,
+    //
+    //     })
+    //         .then(res => {
+    //           this.$parent.$data.products = res.data.data
+    //           this.$parent.$data.links = res.data.links
+    //           console.log(this.$parent.$data.links);
+    //           console.log(res);
+    //         })
+    //         .catch(error => {
+    //           console.log(error);
+    //         })
+    //   },
 
       printSelectedFilters(){
         console.log('Selected gender:', this.gender);
