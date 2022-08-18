@@ -70,8 +70,8 @@
                   <span class="total-price">$1799.00</span>
                 </div>
                 <ul class="text-center cart-buttons">
-                  <li><a href="#" class="btn btn-small">View Cart</a></li>
-                  <li><a href="#" class="btn btn-small btn-solid-border">Checkout</a></li>
+                  <li><router-link :to="{ name:'cart.index' }" class="btn btn-small">View Cart</router-link></li>
+                  <li><router-link :to="{ name:'checkout.index' }" class="btn btn-small btn-solid-border">Checkout</router-link></li>
                 </ul>
               </div>
 

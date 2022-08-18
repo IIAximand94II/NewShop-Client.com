@@ -44,6 +44,16 @@ const router = createRouter({
       name: 'personal.index',
     },
     {
+      path: '/login',
+      component: () => import('../views/login/IndexComponent.vue'),
+      name: 'account.login',
+    },
+    {
+      path: '/signin',
+      component: () => import('../views/signin/IndexComponent.vue'),
+      name: 'account.signin',
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/404/IndexComponent.vue'),
       name: '404.show',

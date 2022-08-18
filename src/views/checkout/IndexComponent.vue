@@ -135,7 +135,18 @@
 
 <script>
 export default {
-  name: "IndexComponent"
+  name: "IndexComponent",
+
+  data(){
+    return{
+      addresses:[];
+      name:null,
+      address:null,
+      zip:null,
+      city:null,
+      country:null,
+    }
+  }
 }
 </script>
 

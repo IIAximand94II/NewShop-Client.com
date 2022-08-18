@@ -29,6 +29,9 @@
                     <thead>
                     <tr>
                       <th class="">Item Name</th>
+                      <th class="">Color</th>
+                      <th class="">Size</th>
+                      <th class="">Quantity</th>
                       <th class="">Item Price</th>
                       <th class="">Actions</th>
                     </tr>
@@ -40,6 +43,15 @@
                           <img width="80" src="../../assets/images/shop/cart/cart-1.jpg" alt="" />
                           <a href="#!">Sunglass</a>
                         </div>
+                      </td>
+                      <td>
+                        <div style="width: 36px; height: 36px; background-color: red; border: none;"></div>
+                      </td>
+                      <td class="text-center">
+                        2
+                      </td>
+                      <td>
+                        M
                       </td>
                       <td class="">$200.00</td>
                       <td class="">
@@ -53,7 +65,16 @@
                           <a href="#!">Airspace</a>
                         </div>
                       </td>
-                      <td class="">$200.00</td>
+                      <td>
+                        <div style="width: 36px; height: 36px; background-color: blue; border: none;"></div>
+                      </td>
+                      <td>
+                        2
+                      </td>
+                      <td>
+                        S
+                      </td>
+                      <td class="">$100.00</td>
                       <td class="">
                         <a class="product-remove" href="#!">Remove</a>
                       </td>
@@ -65,7 +86,16 @@
                           <a href="#!">Bingo</a>
                         </div>
                       </td>
-                      <td class="">$200.00</td>
+                      <td>
+                        <div style="width: 36px; height: 36px; background-color: green; border: none;"></div>
+                      </td>
+                      <td>
+                        3
+                      </td>
+                      <td>
+                        XL
+                      </td>
+                      <td class="">$300.00</td>
                       <td class="">
                         <a class="product-remove" href="#!">Remove</a>
                       </td>

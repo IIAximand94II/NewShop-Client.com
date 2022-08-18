@@ -17,7 +17,7 @@
         <!-- alert message -->
         <div class="alert alert-danger alert-common alert-dismissible hidden" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <i class="tf-ion-close-circled"></i><span>{{ errorMessage }}</span>
+          <i class="tf-ion-close-circled"></i><span>Error message</span>
         </div>
         <!-- /. alert message -->
 
@@ -341,6 +341,7 @@ export default {
               this.maxQuantity = Number(this.allProductsSizes.length);
               this.selectedSize = this.products_group[0].sizes[0].length;
               console.log(this.products_group[0].available_sizes);
+              console.log(this.product);
           })
       },
 
