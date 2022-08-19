@@ -67,7 +67,7 @@
             </div>
 
             <p class="mt-20">Already hava an account ?<router-link to=""> Login</router-link></p>
-            <p><a href="#"> Forgot your password?</a></p>
+            <p><router-link :to="{ name:'account.forgot' }"> Forgot your password?</router-link></p>
           </div>
         </div>
       </div>
@@ -119,41 +119,39 @@ export default {
       if(this.v$.$errors.length){
         console.log('Validation Failed...');
         console.log(this.v$.$errors);
+        return false;
       }else{
         console.log('Validation confirmed!');
-        console.log('First name: '+this.first_name);
-        console.log('Last name: '+this.last_name);
-        console.log('Login: '+this.login);
-        console.log('Email: '+this.email);
-        console.log('Phone: '+this.phone);
-        console.log('Birthday: '+this.birth_date);
-        console.log('Password: '+this.password);
-
-        //this.signin();
+        // console.log('First name: '+this.first_name);
+        // console.log('Last name: '+this.last_name);
+        // console.log('Login: '+this.login);
+        // console.log('Email: '+this.email);
+        // console.log('Phone: '+this.phone);
+        // console.log('Birthday: '+this.birth_date);
+        // console.log('Password: '+this.password);
+        this.signin();
       }
     },
 
     signin(){
-      this.axios.post('',{
-        'first_name':this.first_name,
-        'last_name':this.last_name,
-        'login':this.login,
-        'email':this.email,
-        'phone':this.phone,
-        'birth_date':this.birth_date,
-        'password':this.password,
+      this.axios.post('http://127.0.0.1:8000/api/auth/register',{
+        first_name:this.first_name,
+        last_name:this.last_name,
+        login:this.login,
+        email:this.email,
+        phone:this.phone,
+        birth_date:this.birth_date,
+        password:this.password,
       })
           .then(res => {
             console.log(res);
+            localStorage.setItem('authenticated-token', res.data.token);
           })
           .catch(error => {
             console.log(error);
           })
     },
 
-    // formatBirthDate(){
-    //   console.log(this.birth_date);
-    // }
   }
 }
 </script>

@@ -18,7 +18,7 @@
                 </div>
               </div>
               <div class="text-center">
-                <button @click.prevent="checkForm" type="submit" class="btn btn-main text-center" >Login</button>
+                <button @click.prevent="loginin" type="submit" class="btn btn-main text-center" >Login</button>
               </div>
             <p class="mt-20">New in this site ?<router-link :to="{ name:'account.signin' }"> Create New Account</router-link></p>
           </div>
@@ -33,6 +33,10 @@ import useVuelidate from '@vuelidate/core'
 import { required, email, minLength, maxLength, sameAs, } from '@vuelidate/validators'
 export default {
   name: "IndexComponent",
+
+  mounted() {
+
+  },
 
   data(){
     return{
@@ -69,16 +73,23 @@ export default {
     },
 
     loginin(){
-      this.axios.post('',{
-        'email':this.email,
-        'password':this.password,
-      })
+      this.axios.post('http://127.0.0.1:8000/api/auth/login',{
+        email:this.email,
+        password:this.password,
+      }, )
           .then(res => {
-            console.log(res)
+            //.log(res);
+            console.log(res.data.token);
+            localStorage.setItem('authenticated-token', res.data.token);
           })
           .catch(error => {
-            console.log(error)
+            console.log(error);
           })
+
+    },
+
+    isAuth(){
+      this.axios.post('', )
     }
   }
 }

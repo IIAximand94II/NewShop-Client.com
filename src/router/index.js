@@ -54,6 +54,16 @@ const router = createRouter({
       name: 'account.signin',
     },
     {
+      path: '/forgot',
+      component: () => import('../views/forgotpass/IndexComponent.vue'),
+      name: 'account.forgot',
+    },
+    {
+      path: '/reset',
+      component: () => import('../views/resetpass/IndexComponent.vue'),
+      name: 'account.reset',
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/404/IndexComponent.vue'),
       name: '404.show',

@@ -11,7 +11,7 @@ const app = createApp(App);
 app.use(router);
 app.use(store);
 
-
+axios.defaults.withCredentials = true;
 app.config.globalProperties.axios = axios;
 
 app.mount('#app');
