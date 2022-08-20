@@ -292,20 +292,42 @@
 </template>
 
 <script>
+import api from "../../api";
 export default {
   name: "IndexComponent",
 
   mounted(){
-
+    this.getUserInfo();
+    //this.testRequest()
   },
 
   data(){
     return{
-
+      user:[],
     }
   },
 
-  methods:{}
+  methods:{
+    // testRequest(){
+    //   api.get('http://127.0.0.1:8000/api/test')
+    //     .then(res => {
+    //       console.log(res);
+    //     })
+    //     .catch(error => {
+    //       console.log(error);
+    //     })
+    // },
+
+    getUserInfo(){
+      if(localStorage.getItem('user')){
+        this.user = JSON.parse(localStorage.getItem('user'));
+        console.log(this.user);
+      }else{
+        console.log('user not register')
+      }
+    },
+
+  }
 
 }
 </script>

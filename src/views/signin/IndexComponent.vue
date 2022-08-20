@@ -67,7 +67,7 @@
             </div>
 
             <p class="mt-20">Already hava an account ?<router-link to=""> Login</router-link></p>
-            <p><router-link :to="{ name:'account.forgot' }"> Forgot your password?</router-link></p>
+            <p><router-link :to="{ name:'user.forgot' }"> Forgot your password?</router-link></p>
           </div>
         </div>
       </div>
@@ -145,7 +145,9 @@ export default {
       })
           .then(res => {
             console.log(res);
-            localStorage.setItem('authenticated-token', res.data.token);
+            // localStorage.setItem('user', res.data.user_info);
+            // localStorage.setItem('access-token', res.data.token);
+            this.$router.push({name:'user.login'})
           })
           .catch(error => {
             console.log(error);

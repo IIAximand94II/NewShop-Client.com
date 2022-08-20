@@ -41,27 +41,27 @@ const router = createRouter({
     {
       path: '/personal',
       component: () => import('../views/personal/IndexComponent.vue'),
-      name: 'personal.index',
+      name: 'user.personal',
     },
     {
       path: '/login',
       component: () => import('../views/login/IndexComponent.vue'),
-      name: 'account.login',
+      name: 'user.login',
     },
     {
       path: '/signin',
       component: () => import('../views/signin/IndexComponent.vue'),
-      name: 'account.signin',
+      name: 'user.signin',
     },
     {
       path: '/forgot',
       component: () => import('../views/forgotpass/IndexComponent.vue'),
-      name: 'account.forgot',
+      name: 'user.forgot',
     },
     {
       path: '/reset',
       component: () => import('../views/resetpass/IndexComponent.vue'),
-      name: 'account.reset',
+      name: 'user.reset',
     },
     {
       path: '/:pathMatch(.*)*',

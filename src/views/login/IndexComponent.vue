@@ -20,7 +20,7 @@
               <div class="text-center">
                 <button @click.prevent="loginin" type="submit" class="btn btn-main text-center" >Login</button>
               </div>
-            <p class="mt-20">New in this site ?<router-link :to="{ name:'account.signin' }"> Create New Account</router-link></p>
+            <p class="mt-20">New in this site ?<router-link :to="{ name:'user.signin' }"> Create New Account</router-link></p>
           </div>
         </div>
       </div>
@@ -78,9 +78,10 @@ export default {
         password:this.password,
       }, )
           .then(res => {
-            //.log(res);
-            console.log(res.data.token);
-            localStorage.setItem('authenticated-token', res.data.token);
+            //console.log(res.data.token);
+            localStorage.setItem('user', JSON.stringify(res.data.user_info));
+            localStorage.setItem('access-token', res.data.token);
+            this.$router.push({ name:'user.personal'});
           })
           .catch(error => {
             console.log(error);
@@ -88,9 +89,9 @@ export default {
 
     },
 
-    isAuth(){
-      this.axios.post('', )
-    }
+    // isAuth(){
+    //   this.axios.post('', )
+    // }
   }
 }
 </script>
