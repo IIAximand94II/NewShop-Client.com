@@ -66,10 +66,33 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/404/IndexComponent.vue'),
-      name: '404.show',
-
+      name: 'main.404',
     },
+    // {
+    //   path: '*'
+    // }
   ]
 })
 
-export default router
+router.beforeEach((to, from, next) => {
+
+  const Token = localStorage.getItem('access-token');
+  console.log(to.name);
+
+  if(!(to.name === 'user.login' || to.name === 'user.signin')){
+    //console.log('no login')
+    if(to.name === 'user.personal' && !Token){
+      return next({ name:'user.login' })
+    }
+  }
+
+  if((to.name === 'user.login' || to.name === 'user.signin') && Token){
+    return next({ name:'user.personal' })
+  }
+
+
+  next()
+});
+
+
+export default router;

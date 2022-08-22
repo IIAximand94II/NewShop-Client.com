@@ -78,10 +78,12 @@ export default {
         password:this.password,
       }, )
           .then(res => {
-            //console.log(res.data.token);
-            localStorage.setItem('user', JSON.stringify(res.data.user_info));
-            localStorage.setItem('access-token', res.data.token);
-            this.$router.push({ name:'user.personal'});
+            console.log(res);
+            if(res.data.token){
+              localStorage.setItem('user', JSON.stringify(res.data.user_info));
+              localStorage.setItem('access-token', res.data.token);
+              this.$router.push({ name:'user.personal'});
+            }
           })
           .catch(error => {
             console.log(error);

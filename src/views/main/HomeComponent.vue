@@ -25,7 +25,7 @@
 									</span>
                   </li>
                   <li>
-                    <a href="#!" ><i class="tf-ion-ios-heart"></i></a>
+                    <a @click.prevent="addWishlist(hit.id)" href="#!" ><i :id="`wishlist-btn-${hit.id}`" class="far fa-heart"></i></a>
                   </li>
                   <li>
                     <a href="#!"><i class="tf-ion-android-cart"></i></a>
@@ -81,6 +81,7 @@
 
 import SliderComponent from "./components/SliderComponent.vue";
 import CategoryComponent from "./components/CategoryComponent.vue";
+import api from "../../api";
 export default {
   name: "HomeComponent",
   mounted() {
@@ -106,6 +107,20 @@ export default {
               console.log(error);
             })
       },
+
+      addWishlist(id){
+        const btn = document.querySelector(`#wishlist-btn-${id}`)
+        api.post('http://127.0.0.1:8000/api/products/wishlist', {
+          'product_id':id,
+        })
+        .then(res => {
+          console.log(res)
+          btn.classList.toggle('fas');
+        })
+        .catch(error => {
+          console.log(error.response)
+        })
+      }
 
   },
   components: {CategoryComponent, SliderComponent},

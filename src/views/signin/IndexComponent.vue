@@ -145,12 +145,14 @@ export default {
       })
           .then(res => {
             console.log(res);
-            // localStorage.setItem('user', res.data.user_info);
-            // localStorage.setItem('access-token', res.data.token);
-            this.$router.push({name:'user.login'})
+            if(res.data.token){
+              localStorage.setItem('user', JSON.stringify(res.data.user_info));
+              localStorage.setItem('access-token', res.data.token);
+              this.$router.push({ name:'user.personal'});
+            }
           })
           .catch(error => {
-            console.log(error);
+            console.log(error.response);
           })
     },
 

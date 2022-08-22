@@ -298,7 +298,7 @@ export default {
 
   mounted(){
     this.getUserInfo();
-    //this.testRequest()
+    this.testRequest()
   },
 
   data(){
@@ -308,15 +308,15 @@ export default {
   },
 
   methods:{
-    // testRequest(){
-    //   api.get('http://127.0.0.1:8000/api/test')
-    //     .then(res => {
-    //       console.log(res);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     })
-    // },
+    testRequest(){
+      api.get('http://127.0.0.1:8000/api/test')
+        .then(res => {
+          console.log(res);
+        })
+        .catch(error => {
+          console.log(error);
+        })
+    },
 
     getUserInfo(){
       if(localStorage.getItem('user')){

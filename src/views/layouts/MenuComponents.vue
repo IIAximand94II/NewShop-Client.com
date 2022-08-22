@@ -38,15 +38,15 @@
                   class="tf-ion-ios-arrow-down"></span></a>
               <ul class="dropdown-menu">
                 <li>
-                  <router-link :to="{name:'user.personal'}">Personal</router-link>
+                  <router-link v-if="isAuth" :to="{name:'user.personal'}">Personal</router-link>
                 </li>
                 <li>
-                  <router-link :to="{ name:'user.signin' }">Registration</router-link>
+                  <router-link v-if="!isAuth" :to="{ name:'user.signin' }">Registration</router-link>
                 </li>
                 <li>
-                  <router-link :to="{ name:'user.login' }">Login</router-link>
+                  <router-link v-if="!isAuth" :to="{ name:'user.login' }">Login</router-link>
                 </li>
-                <li>
+                <li v-if="isAuth">
                   <a @click.prevent="logout" href="#">Logout</a>
                 </li>
               </ul>
@@ -94,8 +94,16 @@ export default {
 
   data(){
     return{
-
+      isAuth:null,
     }
+  },
+
+  mounted() {
+    this.checkAuth()
+  },
+
+  updated() {
+    this.checkAuth()
   },
 
   methods:{
@@ -111,9 +119,15 @@ export default {
           .catch(error => {
             console.log(error);
           })
-
       }
-    }
+    },
+
+    checkAuth(){
+      if(localStorage.getItem('access-token') && localStorage.getItem('user')){
+        this.isAuth = true;
+      }
+      this.$forceUpdate();
+    },
   }
 }
 </script>
