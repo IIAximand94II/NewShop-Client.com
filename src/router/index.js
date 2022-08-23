@@ -68,9 +68,6 @@ const router = createRouter({
       component: () => import('../views/404/IndexComponent.vue'),
       name: 'main.404',
     },
-    // {
-    //   path: '*'
-    // }
   ]
 })
 
