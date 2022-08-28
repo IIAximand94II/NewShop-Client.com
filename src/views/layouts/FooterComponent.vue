@@ -53,19 +53,19 @@
           </ul>
           <ul class="footer-menu text-uppercase">
             <li>
-              <a href="contact.html">CONTACT</a>
+              <a href="#">CONTACT</a>
             </li>
             <li>
-              <a href="shop.html">SHOP</a>
+              <a href="#">SHOP</a>
             </li>
             <li>
-              <a href="pricing.html">Pricing</a>
+              <a href="#">Pricing</a>
             </li>
             <li>
-              <a href="contact.html">PRIVACY POLICY</a>
+              <a href="#">PRIVACY POLICY</a>
             </li>
           </ul>
-          <p class="copyright-text">Copyright &copy;2021, Designed &amp; Developed by <a href="https://themefisher.com/">Themefisher</a></p>
+          <p class="copyright-text">Copyright &copy;2021</p>
         </div>
       </div>
     </div>

@@ -27,7 +27,7 @@ export default {
 
   methods:{
     addTag(id){
-      console.log('add tag: '+id);
+      //console.log('add tag: '+id);
       if(this.selectedTags.includes(id)){
         //this.selectedColors.slice(id);
         this.selectedTags = this.selectedTags.filter(e => {

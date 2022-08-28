@@ -309,7 +309,7 @@ export default {
 
   methods:{
     testRequest(){
-      api.get('http://127.0.0.1:8000/api/test')
+      api.get('http://127.0.0.1:8000/api/client/test')
         .then(res => {
           console.log(res);
         })

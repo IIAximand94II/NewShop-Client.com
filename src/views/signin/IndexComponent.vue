@@ -134,7 +134,7 @@ export default {
     },
 
     signin(){
-      this.axios.post('http://127.0.0.1:8000/api/auth/register',{
+      this.axios.post('http://127.0.0.1:8000/api/client/auth/register',{
         first_name:this.first_name,
         last_name:this.last_name,
         login:this.login,

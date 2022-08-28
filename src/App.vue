@@ -35,9 +35,9 @@ export default {
 
   methods:{
     getUserInfo(){
-      api.get('http://127.0.0.1:8000/api/auth/profile')
+      api.get('http://127.0.0.1:8000/api/client/auth/profile')
       .then(res => {
-        console.log(res);
+        //console.log(res);
       })
       .catch(error => {
         console.log(error.response);

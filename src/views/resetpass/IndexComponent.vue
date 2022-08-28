@@ -40,7 +40,7 @@ export default {
 
   methods:{
     resetPass(){
-      this.axios.post('http://127.0.0.1:8000/api/auth/reset', {
+      this.axios.post('http://127.0.0.1:8000/api/client/auth/reset', {
         email: this.email,
         token: this.token,
         password: this.password,

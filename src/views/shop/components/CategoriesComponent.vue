@@ -43,7 +43,7 @@ export default {
 
   methods:{
     getCategories(){
-      this.axios.get('http://127.0.0.1:8000/api/filters')
+      this.axios.get('http://127.0.0.1:8000/api/client/filters')
           .then(res => {
             this.categories = res.data.categories
             //console.log(this.categories)

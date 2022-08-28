@@ -56,18 +56,10 @@
 
 
             <!-- Blog -->
-            <li class="dropdown dropdown-slide">
-              <a href="#!" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-delay="350"
-                 role="button" aria-haspopup="true" aria-expanded="false">Blog <span
-                  class="tf-ion-ios-arrow-down"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Blog Left Sidebar</a></li>
-                <li><a href="#">Blog Right Sidebar</a></li>
-                <li><a href="#">Blog Full Width</a></li>
-                <li><a href="#">Blog 2 Columns</a></li>
-                <li><a href="#">Blog Single</a></li>
-              </ul>
-            </li><!-- / Blog -->
+            <li class="dropdown ">
+              <router-link :to="{name:'blog.index'}">Blog</router-link>
+            </li>
+            <!-- / Blog -->
 
 
             <li class="dropdown ">
@@ -110,7 +102,7 @@ export default {
     logout(){
       //console.log('Logout!');
       if(localStorage.getItem('user') && localStorage.getItem('access-token')){
-        api.post('http://127.0.0.1:8000/api/auth/logout')
+        api.post('http://127.0.0.1:8000/api/client/auth/logout')
           .then(res => {
             localStorage.removeItem('user');
             localStorage.removeItem('access-token');

@@ -132,7 +132,7 @@ export default {
 
   methods:{
       getFilters(){
-        this.axios.get('http://127.0.0.1:8000/api/filters')
+        this.axios.get('http://127.0.0.1:8000/api/client/filters')
             .then(res => {
                 this.filters = res.data
                 this.tags = this.filters.tags
@@ -184,7 +184,7 @@ export default {
 
     // filterProducts(page = 1){
     //     let price = [parseFloat(this.minPriceValue).toFixed(2), parseFloat(this.maxPriceValue).toFixed(2)];
-    //     this.axios.post('http://127.0.0.1:8000/api/products', {
+    //     this.axios.post('http://127.0.0.1:8000/api/client/products', {
     //       'gender': Number(this.gender),
     //       'categories':this.$refs.categories.selectedCategories,
     //       'colors':this.selectedColors,

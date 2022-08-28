@@ -64,6 +64,16 @@ const router = createRouter({
       name: 'user.reset',
     },
     {
+      path: '/blog',
+      component: () => import('../views/blog/IndexView.vue'),
+      name: 'blog.index',
+    },
+    {
+      path: '/blog/:id',
+      component: () => import('../views/blog/PostView.vue'),
+      name: 'blog.post',
+    },
+    {
       path: '/:pathMatch(.*)*',
       component: () => import('../views/404/IndexComponent.vue'),
       name: 'main.404',

@@ -125,7 +125,7 @@ export default {
 
   methods:{
       getProducts(page = 1){
-          this.axios.post('http://127.0.0.1:8000/api/products',{
+          this.axios.post('http://127.0.0.1:8000/api/client/products',{
             'page':Number(page),
             'gender': Number(this.$refs.filters.gender),
             'categories':this.$refs.filters.$refs.categories.selectedCategories,

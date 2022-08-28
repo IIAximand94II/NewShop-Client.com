@@ -52,7 +52,7 @@ export default {
 
   methods:{
     getSlider(){
-      this.axios.get('http://127.0.0.1:8000/api/sliders')
+      this.axios.get('http://127.0.0.1:8000/client/api/sliders')
           .then(res => {
             this.sliders = res.data.data;
             //console.log(this.sliders);

@@ -33,7 +33,7 @@ export default {
 
   methods:{
     forgotPass(){
-      this.axios.post('http://127.0.0.1:8000/api/auth/forgot', {email:this.email})
+      this.axios.post('http://127.0.0.1:8000/api/client/auth/forgot', {email:this.email})
       .then(res => {
         console.log(res);
       })

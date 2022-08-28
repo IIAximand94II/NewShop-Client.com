@@ -73,7 +73,7 @@ export default {
     },
 
     loginin(){
-      this.axios.post('http://127.0.0.1:8000/api/auth/login',{
+      this.axios.post('http://127.0.0.1:8000/api/client/auth/login',{
         email:this.email,
         password:this.password,
       }, )

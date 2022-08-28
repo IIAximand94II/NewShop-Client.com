@@ -98,7 +98,7 @@ export default {
 
   methods:{
       getHits(){
-          this.axios.get('http://127.0.0.1:8000/api/products/hits')
+          this.axios.get('http://127.0.0.1:8000/api/client/products/hits')
             .then(res => {
                 this.hits = res.data.data
                 console.log(this.hits)
@@ -110,7 +110,7 @@ export default {
 
       addWishlist(id){
         const btn = document.querySelector(`#wishlist-btn-${id}`)
-        api.post('http://127.0.0.1:8000/api/products/wishlist', {
+        api.post('http://127.0.0.1:8000/api/client/products/wishlist', {
           'product_id':id,
         })
         .then(res => {
