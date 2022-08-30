@@ -25,13 +25,13 @@
                     <i class="tf-ion-ios-pricetags"></i><a href="#!"> {{ post.category.title }}</a>
                   </li>
                   <li>
-                    <a href="#!"><i class="tf-ion-chatbubbles"></i> 4 COMMENTS</a>
+                    <a href="#!"><i class="tf-ion-chatbubbles"></i> {{ post.totalComments ?? 0}} COMMENTS</a>
                   </li>
                 </ul>
               </div>
               <div class="post-content">
                 <p v-html="post.excerpt"></p>
-                <a href="#" class="btn btn-main">Continue Reading</a>
+                <router-link :to="{ name:'blog.post', params:{id: post.id} }" class="btn btn-main">Continue Reading</router-link>
               </div>
             </div>
           </template>
