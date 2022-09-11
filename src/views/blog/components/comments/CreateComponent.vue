@@ -10,7 +10,7 @@
 
         <!-- Send Button -->
         <div class="form-group col-md-12">
-          <button type="submit" @click.prevent="addComment()" class="btn btn-small btn-main ">
+          <button type="submit" @click.prevent="addComment(postId)" class="btn btn-small btn-main ">
             Send comment
           </button>
         </div>
@@ -20,19 +20,29 @@
 </template>
 
 <script>
-import axios from "axios";
+import api from "../../../../api";
 export default {
   name: "CreateComponent",
+
+  props:{
+    postId: Number
+  },
 
   methods:{
     addComment(parent=null){
       console.log('add comment');
       let id = this.$parent.postId;
-      axios.post(`http://127.0.0.1:8000/api/client/blog/posts/${id}/comments`, {
-        parent_id: parent,
+      api.post(`http://127.0.0.1:8000/api/client/blog/posts/${id}/comments`, {
+        //parent_id: parent,
         content: this.$parent.content,
+        user_id: JSON.parse(localStorage.getItem('user')).id
       })
       .then(res => {
+        this.$wkToast(res.data.message, {
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+          transition: 'fade',
+        })
         console.log(res)
       })
       .catch(error => {

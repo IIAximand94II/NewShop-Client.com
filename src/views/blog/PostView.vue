@@ -66,7 +66,7 @@
 
             <!-- Comments -->
 
-            <CommentsComponent v-bind:comments="comments"></CommentsComponent>
+            <CommentsComponent v-bind:comments="comments" :postId="post.id"></CommentsComponent>
 
             <!-- End comments -->
 

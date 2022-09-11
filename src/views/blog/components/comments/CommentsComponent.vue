@@ -3,7 +3,7 @@
   <ShowComponent ref="showComments" v-bind:comments="comments"></ShowComponent>
 
   <!-- Create comment -->
-  <CreateComponent ref="createComment"></CreateComponent>
+  <CreateComponent ref="createComment" :postId="postId"></CreateComponent>
 </template>
 
 <script>
@@ -14,12 +14,12 @@ export default {
   components: {CreateComponent, ShowComponent},
 
   props:{
-    comments: Object
+    comments: Object,
+    postId: Number
   },
 
   data(){
     return{
-      postId: this.$parent.post.id,
       content:'',
     }
   }

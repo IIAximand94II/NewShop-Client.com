@@ -20,7 +20,7 @@
                 <a href='#!'>{{ comment.author.first_name}}</a>
               </div>
               <time>July 02, 2015, at 11:34</time>
-              <a @click.prevent='showCommentForm(comment.id)' class='comment-button' href='#!'><i class='tf-ion-chatbubbles'></i>Reply</a>
+              <a v-on:click.prevent='showCommentForm(comment.id)' class='comment-button' href='#!'><i class='tf-ion-chatbubbles'></i>Reply</a>
             </div>
 
             <p v-html="comment.content">
@@ -113,7 +113,7 @@ export default {
           "                <a href='#!'>"+data.author.first_name+"</a>\n" +
           "              </div>\n" +
           "              <time>July 02, 2015, at 11:34</time>\n" +
-          `              <a v-on="click: showCommentForm(${data.id})" class='comment-button' href='#!'><i class='tf-ion-chatbubbles'></i>Reply</a>\n` +
+          `              <a v-on:click.prevent='showCommentForm(${data.id})' class='comment-button' href='#!'><i class='tf-ion-chatbubbles'></i>Reply</a>\n` +
           "            </div>\n" +
           "\n" +
           "            <p>\n" +
@@ -142,6 +142,13 @@ export default {
       })
 
       return str;
+    },
+
+  },
+
+  computed:{
+    showEvent(){
+      return `@click.prevent="showCommentForm(3)"`
     }
   },
 

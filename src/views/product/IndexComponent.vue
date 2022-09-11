@@ -66,6 +66,11 @@
           <div class="col-md-7">
             <div class="single-product-details">
               <h2>{{ product.title}}</h2>
+
+              <div class="pull-right">
+                <RatingComponent :grade="productRating"></RatingComponent>
+              </div>
+
               <p class="product-price">${{ selectedProduct.price }}</p>
 
               <p v-html="product.description" class="product-description mt-20">
@@ -131,6 +136,11 @@
                             <h4 class="comment-author">
                               <a href="#!">{{ review.user }}</a>
 
+                              <div class="pull-right">
+                                    <RatingComponent :grade="review.grade"></RatingComponent>
+                              </div>
+
+
                             </h4>
                             <time datetime="2013-04-06T13:53">{{ review.date }}</time>
                             <a class="comment-button" href="#!"><i class="tf-ion-chatbubbles"></i>Reply</a>
@@ -143,6 +153,32 @@
                       <!-- End Comment Item -->
 
                     </ul>
+                  </div>
+
+                  <div class="post-comments-form">
+                    <h3 class="post-sub-heading">Add Review</h3>
+                    <div class="row">
+
+                      <div class="form-group col-md-12">
+                        <div class="star-rating">
+                          <span v-for="i in 5" @click.prevent="changeRating(i)" class="star">&star;</span>
+                        </div>
+                      </div>
+
+
+                      <!-- Comment -->
+                      <div class="form-group col-md-12">
+                        <textarea name="text" id="text" class=" form-control" v-model="this.reviewContent" rows="6" placeholder="Comment" maxlength="400"></textarea>
+                      </div>
+
+                      <!-- Send Button -->
+                      <div class="form-group col-md-12">
+                        <button type="submit" @click.prevent="addReview(product.id)" class="btn btn-small btn-main ">
+                          Send comment
+                        </button>
+                      </div>
+
+                    </div>
                   </div>
                 </div>
               </div>
@@ -303,21 +339,32 @@
 </template>
 
 <script>
+import RatingComponent from "./components/RatingComponent.vue";
+import api from "../../api";
 export default {
   name: "IndexComponent",
-
+  components: {RatingComponent},
   data(){
       return{
           product:[],
           products_group:[],
           selectedProduct:[],
           selectedProductGallery:[],
+          productRating:null,
 
           selectedSize:null,
           allProductsSizes:[],
           maxQuantity:1,
           selectedQuantity:1,
           errorMessage:'Warning! Better check yourself.You are not looking too good',
+
+          // maxRating:5,
+          // currenRating:3,
+          // ratingValue: 4,
+
+          // review
+          reviewGrade: null,
+          reviewContent:'',
       }
   },
 
@@ -326,7 +373,6 @@ export default {
       this.getProduct()
       this.quantityValidator()
   },
-
 
   methods:{
       getProduct(){
@@ -340,17 +386,26 @@ export default {
               this.selectedSize = this.products_group[0].sizes[0].id;
               this.maxQuantity = Number(this.allProductsSizes.length);
               this.selectedSize = this.products_group[0].sizes[0].length;
-              console.log(this.products_group[0].available_sizes);
-              console.log(this.product);
+              this.productRating = this.getProductRating(this.product.reviews);
           })
       },
+
+      getProductRating(array){
+        let sum = 0;
+        array.forEach(elem => {
+          sum += parseFloat(elem.grade)
+        })
+        let avg = sum / array.length
+        return avg.toFixed(2);
+      },
+
 
       changeSelectedProduct(product){
           this.selectedProduct = product;
           this.selectedProductGallery = product.gallery
           this.allProductsSizes = this.selectedProduct.available_sizes;
           this.maxQuantity = this.allProductsSizes.length;
-          //console.log(this.maxQuantity);
+
       },
 
       changeSize(event){
@@ -363,7 +418,6 @@ export default {
               }
           });
           this.maxQuantity = arr.length
-          //console.log(this.maxQuantity);
       },
 
       quantityValidator(){
@@ -433,14 +487,58 @@ export default {
 
       },
 
-      // errorMessage(message=''){
-      //   const cont = document.querySelector('.alert-danger');
-      // }
+      changeRating(grade){
+        this.reviewGrade = grade;
+        let stars = document.querySelectorAll('.star')
+        stars.forEach((star, i) => {
+          if(this.reviewGrade >= i+1){
+            star.innerHTML = '&#9733';
+          }else{
+            star.innerHTML = '&#9734';
+          }
+        })
+      },
+
+      addReview(id){
+        api.post(`http://127.0.0.1:8000/api/client/products/${id}/review`, {
+          grade: this.reviewGrade,
+          content: this.reviewContent,
+          user_id: JSON.parse(localStorage.getItem('user')).id,
+        })
+            .then(res => {
+              this.getProduct(this.product.id)
+              this.reviewGrade = null;
+              this.reviewContent = '';
+              this.$wkToast(res.data.message, {
+                horizontalPosition: 'right',
+                verticalPosition: 'top',
+                transition: 'fade',
+              })
+            })
+            .catch(error => {
+              console.log(error);
+            })
+      }
 
   }
 }
 </script>
 
 <style scoped>
+.star-rating{
+  display: inline-block;
+  margin: 4px;
+  font-size: 2.4em;
+  position: relative;
+}
+.star:hover{
+  cursor: pointer;
+}
+.star-rating .curren-rating{
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  white-space: nowrap;
 
+}
 </style>
