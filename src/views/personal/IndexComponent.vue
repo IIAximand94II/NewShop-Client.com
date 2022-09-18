@@ -123,44 +123,47 @@
                 <AddAddressComponent :userId="user.id"></AddAddressComponent>
               </div>
             </div>
-            <h2>Your addresses:</h2>
-            <div class="table-responsive">
-              <table class="table">
-                <thead>
-                <tr>
-                  <th>Country</th>
-                  <th>State</th>
-                  <th>City</th>
-                  <th>Street</th>
-                  <th>Street</th>
-                  <th>Flat</th>
-                  <th>Zip</th>
-                  <th>Action</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <template v-for="address in addresses">
+            <div v-if="addresses">
+              <h2>Your addresses:</h2>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
                   <tr>
-                    <td>{{ address.country }}</td>
-                    <td>{{ address.state }}</td>
-                    <td>{{ address.city }}</td>
-                    <td>{{ address.street }}</td>
-                    <td>{{ address.house }}</td>
-                    <td>{{ address.flat }}</td>
-                    <td>{{ address.zip }}</td>
-                    <td>
-                      <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-default"><i class="tf-pencil2" aria-hidden="true"></i></button>
-                        <button type="button" class="btn btn-default"><i class="tf-ion-close" aria-hidden="true"></i></button>
-                      </div>
-                    </td>
+                    <th>Country</th>
+                    <th>State</th>
+                    <th>City</th>
+                    <th>Street</th>
+                    <th>Street</th>
+                    <th>Flat</th>
+                    <th>Zip</th>
+                    <th>Action</th>
+                    <th></th>
                   </tr>
-                </template>
+                  </thead>
+                  <tbody>
+                  <template v-for="address in addresses">
+                    <tr>
+                      <td>{{ address.country }}</td>
+                      <td>{{ address.state }}</td>
+                      <td>{{ address.city }}</td>
+                      <td>{{ address.street }}</td>
+                      <td>{{ address.house }}</td>
+                      <td>{{ address.flat }}</td>
+                      <td>{{ address.zip }}</td>
+                      <td>
+                        <div class="btn-group" role="group">
+                          <button type="button" class="btn btn-default"><i class="tf-pencil2" aria-hidden="true"></i></button>
+                          <button @click.prevent="removeAddress(address.id)" type="button" class="btn btn-default"><i class="tf-ion-close" aria-hidden="true"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
 
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
+
           </div>
 
           <!-- Wishlist -->
@@ -286,24 +289,28 @@ export default {
   name: "IndexComponent",
   components: {AddAddressComponent, RatingComponent},
   mounted(){
+    this.$store.dispatch('getUserProfile')
     this.getUserInfo();
   },
 
   data(){
     return{
-      user:[],
+      user: JSON.parse(localStorage.getItem('user')),
       comments:[],
       reviews:[],
       orders:[],
       addresses:[],
       wishlist:[],
+
+      isEdit:null,
     }
   },
 
   methods:{
     getUserInfo(){
       if(localStorage.getItem('user')){
-        this.user = JSON.parse(localStorage.getItem('user'));
+        this.$store.dispatch('getUserProfile')
+        //this.user = JSON.parse(localStorage.getItem('user'));
         this.comments = this.user.comments;
         this.reviews = this.user.reviews;
         this.wishlist = this.user.wishlist;
@@ -314,6 +321,17 @@ export default {
       }
     },
 
+    // getProfile(){
+    //   api.get(`http://127.0.0.1:8000/api/client/profile/${this.user.id}/`)
+    //       .then(res => {
+    //           //let u = res.data.user_info;
+    //           localStorage.setItem('user', JSON.stringify(res.data.user_info))
+    //       })
+    //       .catch(error => {
+    //         console.log(error);
+    //       })
+    // },
+
     showAddAddressForm(){
       const form = document.querySelector('.add-address');
       if(form.style.display === 'none'){
@@ -321,6 +339,25 @@ export default {
       }else{
         form.style.display = 'none';
       }
+    },
+
+    isEdit(id){
+      return this.editId === id;
+    },
+
+    removeAddress(id){
+      api.delete(`http://127.0.0.1:8000/api/client/profile/${this.user.id}/address/${id}`)
+          .then(res => {
+          this.getUserInfo();
+            this.$wkToast(res.data.message, {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              transition: 'fade',
+            })
+          })
+          .catch(error => {
+            console.log(error)
+          })
     }
 
   }

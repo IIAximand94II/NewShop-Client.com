@@ -52,25 +52,18 @@ export default {
 
   methods:{
     addAddress(){
-      // let data = new FormData();
-      // data.append('country', this.country);
-      // data.append('state', this.state);
-      // data.append('city', this.city);
-      // data.append('street', this.street);
-      // data.append('house', this.house);
-      // data.append('flat', this.flat);
-      // data.append('zip', this.zip)
-      api.post(`http://127.0.0.1:8000/api/client/profile/${this.userId}/address`, {
-        country: this.country,
-        state: this.state,
-        city: this.city,
-        street: this.street,
-        house: this.house,
-        flat: this.flat,
-        zip: this.zip,
-      })
+      let data = new FormData();
+      data.append('country', this.country);
+      data.append('state', this.state);
+      data.append('city', this.city);
+      data.append('street', this.street);
+      data.append('house', this.house);
+      data.append('flat', this.flat);
+      data.append('zip', this.zip)
+      api.post(`http://127.0.0.1:8000/api/client/profile/${this.userId}/address`, data)
           .then(res => {
             console.log(res);
+            this.$parent
             this.$wkToast(res.data.message, {
               horizontalPosition: 'right',
               verticalPosition: 'top',

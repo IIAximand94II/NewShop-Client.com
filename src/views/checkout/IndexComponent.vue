@@ -27,28 +27,34 @@
               <form class="checkout-form">
                 <div class="form-group">
                   <label for="full_name">Full Name</label>
-                  <input type="text" class="form-control" id="full_name" placeholder="">
+                  <input type="text" class="form-control" v-model="name" id="full_name" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="user_address">Address</label>
-                  <input type="text" class="form-control" id="user_address" placeholder="">
+                  <label for="full_name">Address</label>
+                  <select @change.prevent="changeAddress($event)" class="form-control" id="user_address">
+                    <template v-for="address in addresses">
+                      <option  :value="address.id">street {{ address.street }}, house {{ address.house }}, flat {{ address.flat }}</option>
+                    </template>
+                  </select>
                 </div>
                 <div class="checkout-country-code clearfix">
                   <div class="form-group">
                     <label for="user_post_code">Zip Code</label>
-                    <input type="text" class="form-control" id="user_post_code" name="zipcode" value="">
+                    <input type="text" class="form-control" id="user_post_code" v-model="zip" name="zipcode">
                   </div>
                   <div class="form-group" >
                     <label for="user_city">City</label>
-                    <input type="text" class="form-control" id="user_city" name="city" value="">
+                    <input type="text" class="form-control" id="user_city" v-model="city" name="city">
                   </div>
                 </div>
                 <div class="form-group">
                   <label for="user_country">Country</label>
-                  <input type="text" class="form-control" id="user_country" placeholder="">
+                  <input type="text" class="form-control" id="user_country" v-model="country" placeholder="">
                 </div>
               </form>
             </div>
+
+            <!-- Payment -->
             <div class="block">
               <h4 class="widget-title">Payment Method</h4>
               <p>Credit Cart Details (Secure payment)</p>
@@ -74,21 +80,30 @@
                 </div>
               </div>
             </div>
+            <!-- End Payment -->
+
           </div>
           <div class="col-md-4">
             <div class="product-checkout-details">
               <div class="block">
                 <h4 class="widget-title">Order Summary</h4>
-                <div class="media product-card">
-                  <a class="pull-left" href="#">
-                    <img class="media-object" src="../../assets/images/shop/cart/cart-1.jpg" alt="Image" />
-                  </a>
-                  <div class="media-body">
-                    <h4 class="media-heading"><a href="#">Ambassador Heritage 1921</a></h4>
-                    <p class="price">1 x $249</p>
-                    <span class="remove" >Remove</span>
+
+                <!-- Cart -->
+                <template v-for="product in cartProducts">
+                  <div class="media product-card">
+                    <a class="pull-left" href="#">
+                      <img class="media-object" :src="product.product_info.image" alt="Image" />
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading"><a href="#">{{ product.product_info.title+', '+product.product_info.color.title }}</a></h4>
+                      <p class="price">{{ product.product_info.qty }} x ${{ product.product_info.total_price }}</p>
+                      <span class="remove" @click.prevent="removeProduct(product)">Remove</span>
+                    </div>
                   </div>
-                </div>
+                </template>
+                <!-- End Cart -->
+
+
                 <div class="discount-code">
                   <p>Have a discount ? <a data-toggle="modal" data-target="#coupon-modal" href="#!">enter it here</a></p>
                 </div>
@@ -137,14 +152,69 @@
 export default {
   name: "IndexComponent",
 
+  mounted() {
+    this.getCartProducts()
+    this.getUserInfo()
+  },
+
   data(){
     return{
-      addresses:[];
+      cartProducts:[],
+
+
+      // user
+      user: [],
+      addresses:[],
+      currentAddress:[],
       name:null,
       address:null,
       zip:null,
       city:null,
       country:null,
+    }
+  },
+
+  methods:{
+    getCartProducts(){
+      this.cartProducts = JSON.parse(localStorage.getItem('cart'));
+      console.log(this.cartProducts)
+      // this.cartProducts.forEach(elem => {
+      //   this.cartSum += elem.total_price;
+      // })
+    },
+
+    getUserInfo(){
+      if(localStorage.getItem('user')){
+        this.$store.dispatch('getUserProfile')
+        this.user = JSON.parse(localStorage.getItem('user'));
+        this.name = this.user.full_name
+        this.addresses = this.user.addresses;
+
+        // address
+        this.currentAddress = this.addresses[0];
+        this.zip = this.currentAddress.zip
+        this.city = this.currentAddress.city
+        this.country = this.currentAddress.country
+        console.log(this.currentAddress)
+      }else{
+        console.log('user not register')
+      }
+    },
+
+    changeAddress(event){
+      let id = event.target.value
+      this.currentAddress = this.addresses.filter(elem => elem.id == id);
+      this.zip = this.currentAddress[0].zip
+      this.city = this.currentAddress[0].city
+      this.country = this.currentAddress[0].country
+    },
+
+    removeProduct(product){
+      let cart  = JSON.parse(localStorage.getItem('cart'));
+      let id = cart.findIndex(elem => elem.product_id === product.product_id && elem.size_id === product.size_id);
+      cart.splice(id, 1);
+      localStorage.setItem('cart', JSON.stringify(cart))
+      this.getCartProducts()
     }
   }
 }

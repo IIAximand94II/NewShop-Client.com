@@ -33,9 +33,9 @@
 
                   <div class='carousel-inner '>
                     <div class='item active'>
-                      <img :src='product.title_image' alt='' data-zoom-image="images/shop/single-products/product-1.jpg" />
+                      <img :src='selectedProduct.title_image' alt='' data-zoom-image="images/shop/single-products/product-1.jpg" />
                     </div>
-                    <div v-for="image in selectedProductGallery" class='item'>
+                    <div v-for="image in selectedProduct.gallery" class='item'>
                       <img :src='image.image' alt='product image' data-zoom-image="images/shop/single-products/product-2.jpg" />
                     </div>
                   </div>
@@ -52,9 +52,9 @@
                 <!-- thumb -->
                 <ol class='carousel-indicators mCustomScrollbar meartlab'>
                   <li data-target='#carousel-custom' data-slide-to='0' class='active'>
-                    <img :src='product.preview_image' alt='' />
+                    <img :src='selectedProduct.preview_image' alt='' />
                   </li>
-                  <li v-for="preview_img in selectedProductGallery" data-target='#carousel-custom' data-slide-to='1'>
+                  <li v-for="preview_img in selectedProduct.gallery" data-target='#carousel-custom' data-slide-to='1'>
                     <img :src='preview_img.image' alt='product image' />
                   </li>
                 </ol>
@@ -65,7 +65,7 @@
           </div>
           <div class="col-md-7">
             <div class="single-product-details">
-              <h2>{{ product.title}}</h2>
+              <h2>{{ selectedProduct.title}}</h2>
 
               <div class="pull-right">
                 <RatingComponent :grade="productRating"></RatingComponent>
@@ -73,14 +73,14 @@
 
               <p class="product-price">${{ selectedProduct.price }}</p>
 
-              <p v-html="product.description" class="product-description mt-20">
+              <p v-html="selectedProduct.excerpt" class="product-description mt-20">
               </p>
               <div class="color-swatches">
                 <span>color:</span>
                 <ul>
-                  <template v-for="product_group in products_group">
-                      <li v-for="p_color in product_group.color">
-                        <a @click.prevent="changeSelectedProduct(product_group)" href="#" :style="`width: 26px; height: 26px; background-color: ${p_color.hex}; border: none; margin-right: 3px`" :title="p_color.title"></a>
+                  <template v-for="productGroup in productsGroup">
+                      <li>
+                        <a @click.prevent="getSelectedProduct(productGroup.id)" href="#" :style="`width: 26px; height: 26px; background-color: ${productGroup.color.hex}; border: none; margin-right: 3px`"></a>
                       </li>
                   </template>
 
@@ -89,7 +89,7 @@
               <div class="product-size">
                 <span>Size:</span>
                 <select @change="changeSize($event)" class="form-control">
-                  <option  v-for="size in selectedProduct.sizes" :value="size.id">{{ size.size }}</option>
+                  <option  v-for="size in selectedProduct.sizes" :value="size.id" :data-size="size.size">{{ size.size }}</option>
                 </select>
               </div>
               <div class="product-quantity">
@@ -101,10 +101,10 @@
               <div class="product-category">
                 <span>Tags:</span>
                 <ul>
-                  <li v-for="tag in product.tags"><a href="">{{ tag.title }}</a></li>
+                  <li v-for="tag in selectedProduct.tags"><a href="">{{ tag.title }}</a></li>
                 </ul>
               </div>
-              <a @click.prevent="addToCart(selectedProduct.id)" href="#" class="btn btn-main mt-20">Add To Cart</a>
+              <a @click.prevent="addToCart(selectedProduct)" href="#" class="btn btn-main mt-20">Add To Cart</a>
             </div>
           </div>
         </div>
@@ -118,14 +118,14 @@
               <div class="tab-content patternbg">
                 <div id="details" class="tab-pane fade active in">
                   <h4>Product Description</h4>
-                  <div v-html="product.description"></div>
+                  <div v-html="selectedProduct.description"></div>
                 </div>
                 <div id="reviews" class="tab-pane fade">
                   <div class="post-comments">
                     <ul class="media-list comments-list m-bot-50 clearlist">
 
                       <!-- Comment Item start-->
-                      <li v-for="review in product.reviews" class="media">
+                      <li v-for="review in selectedProduct.reviews" class="media">
 
                         <a class="pull-left" href="#!">
                           <img class="media-object comment-avatar" src="../../assets/images/blog/avater-1.jpg" alt="" width="50" height="50" />
@@ -173,7 +173,7 @@
 
                       <!-- Send Button -->
                       <div class="form-group col-md-12">
-                        <button type="submit" @click.prevent="addReview(product.id)" class="btn btn-small btn-main ">
+                        <button type="submit" @click.prevent="addReview(selectedProduct.group_id)" class="btn btn-small btn-main ">
                           Send comment
                         </button>
                       </div>
@@ -344,50 +344,49 @@ import api from "../../api";
 export default {
   name: "IndexComponent",
   components: {RatingComponent},
+
   data(){
       return{
-          product:[],
-          products_group:[],
+          productsGroup:[],
           selectedProduct:[],
-          selectedProductGallery:[],
           productRating:null,
-
           selectedSize:null,
-          allProductsSizes:[],
-          maxQuantity:1,
-          selectedQuantity:1,
-          errorMessage:'Warning! Better check yourself.You are not looking too good',
-
-          // maxRating:5,
-          // currenRating:3,
-          // ratingValue: 4,
 
           // review
           reviewGrade: null,
           reviewContent:'',
+
+
+
+          //allProductsSizes:[],
+          maxQuantity:1,
+          selectedQuantity:1,
+
+
+
       }
   },
 
   mounted() {
       $(document).trigger('change')
-      this.getProduct()
+      this.getSelectedProduct()
       this.quantityValidator()
   },
 
   methods:{
-      getProduct(){
-          this.axios.get(`http://127.0.0.1:8000/api/client/products/${this.$route.params.id}`)
-          .then(res => {
-              this.product = res.data.data;
-              this.products_group = res.data.data.group;
-              this.selectedProduct = this.products_group[0];
-              this.selectedProductGallery = this.selectedProduct.gallery
-              this.allProductsSizes = this.products_group[0].available_sizes;
-              this.selectedSize = this.products_group[0].sizes[0].id;
-              this.maxQuantity = Number(this.allProductsSizes.length);
-              this.selectedSize = this.products_group[0].sizes[0].length;
-              this.productRating = this.getProductRating(this.product.reviews);
-          })
+      getSelectedProduct(id=this.$route.params.id){
+        console.log(id)
+        this.axios.get(`http://127.0.0.1:8000/api/client/products/${id}`)
+            .then(res => {
+              this.selectedProduct = res.data.data
+              this.productsGroup = this.selectedProduct.group
+              this.productRating = this.getProductRating(this.selectedProduct.reviews);
+              console.log(this.selectedProduct);
+              console.log(this.productRating)
+            })
+            .catch(error => {
+              console.log(error);
+            })
       },
 
       getProductRating(array){
@@ -399,25 +398,21 @@ export default {
         return avg.toFixed(2);
       },
 
-
-      changeSelectedProduct(product){
-          this.selectedProduct = product;
-          this.selectedProductGallery = product.gallery
-          this.allProductsSizes = this.selectedProduct.available_sizes;
-          this.maxQuantity = this.allProductsSizes.length;
-
-      },
-
       changeSize(event){
           let arr = [];
           this.selectedSize = event.target.value
+          this.selectedSize = {
+            id: event.target.value,
+          }
           this.selectedProduct.available_sizes.forEach(elem => {
               // all product_size == selected size
-              if(elem.id == this.selectedSize){
+              if(elem.id == this.selectedSize.id){
+                  this.selectedSize['size'] = elem.size;
                   arr.push(elem)
               }
           });
           this.maxQuantity = arr.length
+          console.log(this.selectedSize)
       },
 
       quantityValidator(){
@@ -432,17 +427,10 @@ export default {
         })
       },
 
-      addToCart(id){
-        // console.log(this.selectedProduct);
-        // console.log('Add to cart, id: '+id);
-        // console.log('color id: '+this.selectedProduct.color[0].id);
-        // console.log('size id: '+ this.selectedSize);
-
-        console.log('max quantity:'+this.maxQuantity)
-
-        let color = Number(this.selectedProduct.color[0].id)
-        let size = Number(this.selectedSize);
-        let qty = Number(this.selectedQuantity)??1;
+      addToCart(product){
+        console.log(product)
+         let size = this.selectedSize;
+         let qty = Number(this.selectedQuantity) ?? 1;
 
         // if(qty > this.maxQuantity){
         //   console.log('qty > max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
@@ -453,33 +441,46 @@ export default {
         // }
 
         let cart = localStorage.getItem('cart');
-        let product = [{
-          'product_id': this.product.id,
-          'product_group_id':id,
-          'qty':(qty<=this.maxQuantity)?qty:this.maxQuantity,
-          'color':color,
-          'size':size,
+        let cartProduct = [{
+          'product_id': product.id,
+          //'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
+          'size_id': Number(size.id),
+          //'price': product.price,
+          //'total_price': product.price,
+
+          'product_info':{
+            'product_id': product.id,
+            'title':product.title,
+            'image':product.title_image,
+            'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
+            'color': product.color,
+            'size': size,
+            'price': product.price,
+            'total_price': product.price,
+
+          },
         }];
 
-        //console.log(size);
         if(!cart){
-          localStorage.setItem('cart', JSON.stringify(product));
+          localStorage.setItem('cart', JSON.stringify(cartProduct));
         }else{
           cart = JSON.parse(cart)
           cart.forEach(elem =>{
-            if(elem.product_group_id === id && elem.size === size){
-              elem.qty = Number(elem.qty)+1
+            if(elem.product_id === product.id && elem.size_id === Number(size.id)){
+              elem.product_info.qty = Number(elem.product_info.qty)+1
+              elem.product_info.total_price += product.price
               if(qty <= this.maxQuantity){
                 console.log('qty > max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
-                product = null
-              }else{
-                console.log('qty < max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
-                return false
+                cartProduct = null
               }
+              // else{
+              //   console.log('qty < max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
+              //   return false
+              // }
             }
 
           })
-          Array.prototype.push.apply(cart, product);
+          Array.prototype.push.apply(cart, cartProduct);
 
           localStorage.setItem('cart', JSON.stringify(cart))
         }
@@ -506,7 +507,7 @@ export default {
           user_id: JSON.parse(localStorage.getItem('user')).id,
         })
             .then(res => {
-              this.getProduct(this.product.id)
+              this.getSelectedProduct(this.selectedProduct.id)
               this.reviewGrade = null;
               this.reviewContent = '';
               this.$wkToast(res.data.message, {

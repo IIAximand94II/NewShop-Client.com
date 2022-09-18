@@ -84,18 +84,29 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   const Token = localStorage.getItem('access-token');
-  console.log(to.name);
+  console.log(from.name);
 
   if(!(to.name === 'user.login' || to.name === 'user.signin')){
     //console.log('no login')
     if(to.name === 'user.personal' && !Token){
       return next({ name:'user.login' })
     }
+
+
+    if(to.name === 'checkout.index' && !Token){
+      return next({ name:'user.login' })
+    }
   }
 
+
   if((to.name === 'user.login' || to.name === 'user.signin') && Token){
+
     return next({ name:'user.personal' })
   }
+
+  // if((to.name === 'user.login' && from.name === 'cart.index') && Token){
+  //   return next({ name:'checkout.index'})
+  // }
 
 
   next()

@@ -20,7 +20,7 @@
               <div class="preview-meta">
                 <ul>
                   <li>
-									<span  data-toggle="modal" :data-target="`#product-modal-${hit.id}`">
+									<span @click.prevent="getSelectedProduct(hit.id)" data-toggle="modal" data-target="#product-modal">
 										<i class="tf-ion-ios-search-strong"></i>
 									</span>
                   </li>
@@ -34,14 +34,14 @@
               </div>
             </div>
             <div class="product-content">
-              <h4><router-link :to="{name:'product.index', params:{id:hit.id}}">{{ hit.title }}</router-link></h4>
+              <h4><router-link :to="{name:'product.index', params:{id:hit.id}}">{{ hit.title+', '+hit.color.title }}</router-link></h4>
               <p class="price">${{hit.price}}</p>
             </div>
           </div>
         </div>
 
         <!-- Modal -->
-        <div v-for="hit in hits" class="modal product-modal fade" :id="`product-modal-${hit.id}`">
+        <div v-if="selectedProduct" class="modal product-modal fade" id="product-modal">
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <i class="tf-ion-close"></i>
           </button>
@@ -51,18 +51,52 @@
                 <div class="row">
                   <div class="col-md-8 col-sm-6 col-xs-12">
                     <div class="modal-image">
-                      <img class="img-responsive" :src="hit.title_image" alt="product-img" />
+                      <img class="img-responsive" :src="selectedProduct.title_image" alt="product-img" />
                     </div>
                   </div>
                   <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="product-short-details">
-                      <h2 class="product-title">{{ hit.title }}</h2>
-                      <p class="product-price">${{ hit.price }}</p>
-                      <p v-html="hit.excerpt" class="product-short-description">
+
+                      <h2 class="product-title">{{ selectedProduct.title+', '+selectedProduct.color.title }}</h2>
+
+                      <div class="row">
+                        <RatingComponent :grade="5"></RatingComponent>
+                      </div>
+
+                      <p class="product-price">${{ selectedProduct.price }}</p>
+                      <p v-html="selectedProduct.excerpt" class="product-short-description">
 
                       </p>
+
+                      <div class="single-product-details">
+                        <!-- Colors -->
+                        <div class="color-swatches">
+                          <span>Colors:</span>
+                          <div class="row">
+                            <ul>
+                              <template v-for="productsGroup in selectedProduct.group">
+                                <li>
+                                  <a @click.prevent="getSelectedProduct(productsGroup.id)" href="#" :style="`width: 25px; height: 25px; background-color: ${productsGroup.color.hex}; border: none; margin-right: 2px`"></a>
+                                </li>
+                              </template>
+
+                            </ul>
+                          </div>
+                        </div>
+
+                        <!-- Sizes -->
+                        <div class="product-size">
+                          <span>Sizes:</span>
+                          <select @change="changeSize($event)" class="form-control">
+                            <option value="1">S</option>
+                            <option value="2">M</option>
+                          </select>
+                        </div>
+
+                      </div>
+
                       <a href="#" class="btn btn-main">Add To Cart</a>
-                      <router-link :to="{name:'product.index', params:{id:hit.id}}" class="btn btn-transparent">View Product Details</router-link>
+                      <router-link :to="{name:'product.index', params:{id:selectedProduct.id}}" class="btn btn-transparent">View Product Details</router-link>
                     </div>
                   </div>
                 </div>
@@ -82,6 +116,7 @@
 import SliderComponent from "./components/SliderComponent.vue";
 import CategoryComponent from "./components/CategoryComponent.vue";
 import api from "../../api";
+import RatingComponent from "../product/components/RatingComponent.vue";
 export default {
   name: "HomeComponent",
   mounted() {
@@ -93,6 +128,7 @@ export default {
   data(){
     return{
       hits:[],
+      selectedProduct:null,
     }
   },
 
@@ -105,6 +141,14 @@ export default {
             })
             .catch(error => {
               console.log(error);
+            })
+      },
+
+      getSelectedProduct(id){
+        this.axios.get(`http://127.0.0.1:8000/api/client/products/${id}`)
+            .then(res => {
+              this.selectedProduct = res.data.data;
+              console.log(this.selectedProduct.group);
             })
       },
 
@@ -123,7 +167,7 @@ export default {
       }
 
   },
-  components: {CategoryComponent, SliderComponent},
+  components: {RatingComponent, CategoryComponent, SliderComponent},
 }
 </script>
 

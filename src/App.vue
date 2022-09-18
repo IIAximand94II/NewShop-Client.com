@@ -26,7 +26,6 @@ export default {
 
   mounted() {
     $(document).trigger('load')
-    this.getUserInfo()
   },
 
   updated() {
@@ -34,15 +33,7 @@ export default {
   },
 
   methods:{
-    getUserInfo(){
-      api.get('http://127.0.0.1:8000/api/client/auth/')
-      .then(res => {
-        console.log(res);
-      })
-      .catch(error => {
-        console.log(error.response);
-      })
-    }
+
   },
 
   components: {MenuComponents, HeaderComponent, FooterComponent},

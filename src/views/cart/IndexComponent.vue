@@ -37,69 +37,30 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="../../assets/images/shop/cart/cart-1.jpg" alt="" />
-                          <a href="#!">Sunglass</a>
-                        </div>
-                      </td>
-                      <td>
-                        <div style="width: 36px; height: 36px; background-color: red; border: none;"></div>
-                      </td>
-                      <td class="text-center">
-                        2
-                      </td>
-                      <td>
-                        M
-                      </td>
-                      <td class="">$200.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">Remove</a>
-                      </td>
-                    </tr>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="../../assets/images/shop/cart/cart-2.jpg" alt="" />
-                          <a href="#!">Airspace</a>
-                        </div>
-                      </td>
-                      <td>
-                        <div style="width: 36px; height: 36px; background-color: blue; border: none;"></div>
-                      </td>
-                      <td>
-                        2
-                      </td>
-                      <td>
-                        S
-                      </td>
-                      <td class="">$100.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">Remove</a>
-                      </td>
-                    </tr>
-                    <tr class="">
-                      <td class="">
-                        <div class="product-info">
-                          <img width="80" src="../../assets/images/shop/cart/cart-3.jpg" alt="" />
-                          <a href="#!">Bingo</a>
-                        </div>
-                      </td>
-                      <td>
-                        <div style="width: 36px; height: 36px; background-color: green; border: none;"></div>
-                      </td>
-                      <td>
-                        3
-                      </td>
-                      <td>
-                        XL
-                      </td>
-                      <td class="">$300.00</td>
-                      <td class="">
-                        <a class="product-remove" href="#!">Remove</a>
-                      </td>
-                    </tr>
+                    <template v-for="product in cartProducts">
+                      <tr class="">
+                        <td class="">
+                          <div class="product-info">
+                            <img width="80" :src="product.product_info.image" alt="" />
+                            <a href="#!">{{ product.product_info.title }}</a>
+                          </div>
+                        </td>
+                        <td>
+                          <div :style="`width: 36px; height: 36px; background-color: ${product.product_info.color.hex}; border: none;`"></div>
+                        </td>
+                        <td class="text-center">
+                          {{ product.product_info.size.size }}
+                        </td>
+                        <td>
+                          {{ product.product_info.qty }}
+                        </td>
+                        <td class="">${{ product.product_info.total_price }}</td>
+                        <td class="">
+                          <a class="product-remove" @click.prevent="removeProduct(product)" href="#!">Remove</a>
+                        </td>
+                      </tr>
+                    </template>
+
                     </tbody>
                   </table>
                   <router-link :to="{name:'checkout.index'}" class="btn btn-main pull-right">Checkout</router-link>
@@ -115,7 +76,32 @@
 
 <script>
 export default {
-  name: "IndexComponent"
+  name: "IndexComponent",
+
+  mounted() {
+    this.getCartProducts()
+  },
+
+  data(){
+    return{
+      cartProducts:[],
+    }
+  },
+
+  methods:{
+    getCartProducts(){
+      this.cartProducts = JSON.parse(localStorage.getItem('cart'));
+      console.log(this.cartProducts);
+    },
+
+    removeProduct(product){
+      let cart  = JSON.parse(localStorage.getItem('cart'));
+      let id = cart.findIndex(elem => elem.product_id === product.product_id && elem.size_id === product.size_id);
+      cart.splice(id, 1);
+      localStorage.setItem('cart', JSON.stringify(cart))
+      this.getCartProducts()
+    }
+  }
 }
 </script>
 

@@ -81,6 +81,7 @@ export default {
             console.log(res);
             if(res.data.token){
               localStorage.setItem('user', JSON.stringify(res.data.user_info));
+              localStorage.setItem('user_id', JSON.stringify(res.data.user_info.id));
               localStorage.setItem('access-token', res.data.token);
               this.$router.push({ name:'user.personal'});
             }
