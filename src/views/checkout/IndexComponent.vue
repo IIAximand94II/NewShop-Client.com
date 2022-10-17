@@ -30,12 +30,30 @@
                   <input type="text" class="form-control" v-model="name" id="full_name" placeholder="">
                 </div>
                 <div class="form-group">
-                  <label for="full_name">Address</label>
                   <select @change.prevent="changeAddress($event)" class="form-control" id="user_address">
+                    <option :value="0">New address</option>
                     <template v-for="address in addresses">
                       <option  :value="address.id">street {{ address.street }}, house {{ address.house }}, flat {{ address.flat }}</option>
                     </template>
                   </select>
+
+                </div>
+                <div class="form-group">
+                  <label for="user_address">Flat</label>
+                  <input type="text" v-model="street" class="form-control">
+                </div>
+                <div class="checkout-country-code clearfix">
+
+                    <div class="form-group">
+                      <label for="user_address">Street</label>
+                      <input type="text" v-model="house" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="user_address">House</label>
+                      <input type="text" v-model="flat" class="form-control">
+                    </div>
+
                 </div>
                 <div class="checkout-country-code clearfix">
                   <div class="form-group">
@@ -74,7 +92,7 @@
                         <label for="card-cvc">Card Code <span class="required">*</span></label>
                         <input id="card-cvc" class="form-control"  type="tel" maxlength="4" placeholder="CVC" >
                       </div>
-                      <a href="#" class="btn btn-main mt-20">Place Order</a >
+                      <a href="#" @click.prevent="creteOrder" class="btn btn-main mt-20">Place Order</a >
                     </form>
                   </div>
                 </div>
@@ -96,7 +114,7 @@
                     </a>
                     <div class="media-body">
                       <h4 class="media-heading"><a href="#">{{ product.product_info.title+', '+product.product_info.color.title }}</a></h4>
-                      <p class="price">{{ product.product_info.qty }} x ${{ product.product_info.total_price }}</p>
+                      <p class="price">{{ product.qty }} x ${{ product.total }}</p>
                       <span class="remove" @click.prevent="removeProduct(product)">Remove</span>
                     </div>
                   </div>
@@ -149,6 +167,7 @@
 </template>
 
 <script>
+import api from "../../api";
 export default {
   name: "IndexComponent",
 
@@ -168,9 +187,30 @@ export default {
       currentAddress:[],
       name:null,
       address:null,
-      zip:null,
-      city:null,
-      country:null,
+      country:'',
+      city:'',
+      street:'',
+      house:null,
+      flat:null,
+      zip:null
+    }
+  },
+
+  computed:{
+    getTotalSum(){
+      let sum = 0;
+      this.cartProducts.forEach(elem => {
+        sum += elem.total;
+      })
+      return sum
+    },
+
+    getQty(){
+      let qty = 0;
+      this.cartProducts.forEach(elem => {
+        qty += elem.qty;
+      })
+      return qty;
     }
   },
 
@@ -204,9 +244,12 @@ export default {
     changeAddress(event){
       let id = event.target.value
       this.currentAddress = this.addresses.filter(elem => elem.id == id);
-      this.zip = this.currentAddress[0].zip
-      this.city = this.currentAddress[0].city
-      this.country = this.currentAddress[0].country
+      this.zip = this.currentAddress[0].zip ?? null
+      this.city = this.currentAddress[0].city ?? null
+      this.country = this.currentAddress[0].country ?? null
+      this.house = this.currentAddress[0].house ?? null
+      this.flat = this.currentAddress[0].flat ?? null
+      this.street = this.currentAddress[0].street ?? null
     },
 
     removeProduct(product){
@@ -215,6 +258,30 @@ export default {
       cart.splice(id, 1);
       localStorage.setItem('cart', JSON.stringify(cart))
       this.getCartProducts()
+    },
+
+    creteOrder(){
+
+      localStorage.removeItem('cart');
+      api.post(`http://127.0.0.1:8000/api/client/${this.user.id}/order`, {
+        //user_id: this.user.id,
+        name: this.name,
+        products: this.cartProducts,
+        address: this.currentAddress[0],
+        total: this.getTotalSum,
+        qty: this.getQty,
+      })
+          .then(res => {
+            console.log(res)
+            this.$wkToast(res.data.message, {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              transition: 'fade',
+            })
+          })
+          .catch(error => {
+            console.log(error)
+          })
     }
   }
 }

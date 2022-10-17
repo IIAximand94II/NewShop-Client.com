@@ -408,6 +408,7 @@ export default {
               // all product_size == selected size
               if(elem.id == this.selectedSize.id){
                   this.selectedSize['size'] = elem.size;
+                  this.selectedSize['product_size'] = elem.id;
                   arr.push(elem)
               }
           });
@@ -443,20 +444,23 @@ export default {
         let cart = localStorage.getItem('cart');
         let cartProduct = [{
           'product_id': product.id,
-          //'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
           'size_id': Number(size.id),
+          'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
+          'price': product.price,
+          'total': product.price,
           //'price': product.price,
           //'total_price': product.price,
+          //'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
 
           'product_info':{
             'product_id': product.id,
             'title':product.title,
             'image':product.title_image,
-            'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
             'color': product.color,
             'size': size,
-            'price': product.price,
-            'total_price': product.price,
+            //'qty': (qty<=this.maxQuantity)?qty:this.maxQuantity,
+            //'price': product.price,
+            //'total_price': product.price,
 
           },
         }];
@@ -467,8 +471,8 @@ export default {
           cart = JSON.parse(cart)
           cart.forEach(elem =>{
             if(elem.product_id === product.id && elem.size_id === Number(size.id)){
-              elem.product_info.qty = Number(elem.product_info.qty)+1
-              elem.product_info.total_price += product.price
+              elem.qty = Number(elem.qty)+1
+              elem.total += product.price
               if(qty <= this.maxQuantity){
                 console.log('qty > max. Max qty: '+this.maxQuantity+', you selected qty: '+qty)
                 cartProduct = null

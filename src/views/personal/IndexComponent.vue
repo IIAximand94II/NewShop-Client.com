@@ -62,46 +62,55 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                  <td>#451231</td>
-                  <td>Mar 25, 2016</td>
-                  <td>2</td>
-                  <td>$99.00</td>
-                  <td><span class="label label-primary">Processing</span></td>
-                  <td><a href="order.html" class="btn btn-default">View</a></td>
-                </tr>
-                <tr>
-                  <td>#451231</td>
-                  <td>Mar 25, 2016</td>
-                  <td>3</td>
-                  <td>$150.00</td>
-                  <td><span class="label label-success">Completed</span></td>
-                  <td><a href="order.html" class="btn btn-default">View</a></td>
-                </tr>
-                <tr>
-                  <td>#451231</td>
-                  <td>Mar 25, 2016</td>
-                  <td>3</td>
-                  <td>$150.00</td>
-                  <td><span class="label label-danger">Canceled</span></td>
-                  <td><a href="order.html" class="btn btn-default">View</a></td>
-                </tr>
-                <tr>
-                  <td>#451231</td>
-                  <td>Mar 25, 2016</td>
-                  <td>2</td>
-                  <td>$99.00</td>
-                  <td><span class="label label-info">On Hold</span></td>
-                  <td><a href="order.html" class="btn btn-default">View</a></td>
-                </tr>
-                <tr>
-                  <td>#451231</td>
-                  <td>Mar 25, 2016</td>
-                  <td>3</td>
-                  <td>$150.00</td>
-                  <td><span class="label label-warning">Pending</span></td>
-                  <td><a href="order.html" class="btn btn-default">View</a></td>
-                </tr>
+                <template v-for="order in orders">
+                  <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.date }}</td>
+                    <td>{{ order.qty }}</td>
+                    <td>${{ order.total }}</td>
+                    <td><span :class="`label label-${formatStatusColor(order.status)}`">{{ formatStatus(order.status) }}</span></td>
+                    <td>
+                      <a class="btn btn-default" data-toggle="collapse" data-target="#order-1" aria-expanded="false" aria-hidden="true" aria-controls="order-1">View</a>
+
+                    </td>
+                    <td>
+                      <button @click.prevent="orderCanseled(order.id)" v-if="order.status!==4" class="btn btn-danger">Canceled</button>
+                    </td>
+                  </tr>
+
+                  <!-- order products -->
+
+                      <tr class="collapse" id="order-1">
+                        <td colspan="7">
+                          <table class="table table-responsive">
+                            <tr>
+                              <th>title</th>
+                              <th>image</th>
+                              <th>color</th>
+                              <th>size</th>
+                              <th>price</th>
+                              <th>qty</th>
+                              <th>total</th>
+                            </tr>
+                            <tr style="margin-top: 4px" v-for="product in order.products">
+                              <td>{{ product.product_info.title }}</td>
+                              <td><img :src="product.product_info.preview_image" width="80" height="80"></td>
+                              <td><div :style="`width: 26px; height: 26px; background-color: ${product.product_info.color.hex}; border: none; margin-right: 3px`"></div></td>
+                              <td>{{ product.size.size }}</td>
+                              <td>{{ product.price }}</td>
+                              <td>{{ product.qty }}</td>
+                              <td>{{ product.total }}</td>
+                            </tr>
+                          </table>
+                        </td>
+
+
+
+                      </tr>
+
+
+
+                </template>
                 </tbody>
               </table>
             </div>
@@ -130,7 +139,6 @@
                   <thead>
                   <tr>
                     <th>Country</th>
-                    <th>State</th>
                     <th>City</th>
                     <th>Street</th>
                     <th>Street</th>
@@ -144,7 +152,6 @@
                   <template v-for="address in addresses">
                     <tr>
                       <td>{{ address.country }}</td>
-                      <td>{{ address.state }}</td>
                       <td>{{ address.city }}</td>
                       <td>{{ address.street }}</td>
                       <td>{{ address.house }}</td>
@@ -291,6 +298,7 @@ export default {
   mounted(){
     this.$store.dispatch('getUserProfile')
     this.getUserInfo();
+    //this.getProfile()
   },
 
   data(){
@@ -306,6 +314,13 @@ export default {
     }
   },
 
+  computed:{
+    // Processing | Canceled | completed | On Hold | Pending
+    getStatus(status){
+
+    }
+  },
+
   methods:{
     getUserInfo(){
       if(localStorage.getItem('user')){
@@ -315,22 +330,22 @@ export default {
         this.reviews = this.user.reviews;
         this.wishlist = this.user.wishlist;
         this.addresses = this.user.addresses;
+        this.orders = this.user.orders;
         console.log(this.user);
       }else{
         console.log('user not register')
       }
     },
 
-    // getProfile(){
-    //   api.get(`http://127.0.0.1:8000/api/client/profile/${this.user.id}/`)
-    //       .then(res => {
-    //           //let u = res.data.user_info;
-    //           localStorage.setItem('user', JSON.stringify(res.data.user_info))
-    //       })
-    //       .catch(error => {
-    //         console.log(error);
-    //       })
-    // },
+    getProfile(){
+      api.get(`http://127.0.0.1:8000/api/client/profile/${this.user.id}/`)
+          .then(res => {
+              //console.log(res.data)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+    },
 
     showAddAddressForm(){
       const form = document.querySelector('.add-address');
@@ -357,6 +372,53 @@ export default {
           })
           .catch(error => {
             console.log(error)
+          })
+    },
+
+    formatStatus(status){
+      // Processing | Canceled | completed | On Hold | Pending
+      switch(status) {
+        case 0:
+          return 'Processing';
+        case 1:
+          return 'Canceled';
+        case 2:
+          return 'Pending';
+        case 3:
+          return 'On Hold';
+        case 4:
+          return 'Completed';
+      }
+    },
+
+    formatStatusColor(status){
+      // Processing | Canceled | completed | On Hold | Pending
+      switch(status) {
+        case 0:
+          return 'primary';
+        case 1:
+          return 'danger';
+        case 2:
+          return 'default';
+        case 3:
+          return 'info';
+        case 4:
+          return 'success';
+      }
+    },
+
+    orderCanseled(id){
+      api.delete(`http://127.0.0.1:8000/api/client/${this.user.id}/order/${id}`)
+          .then(res => {
+            console.log(res);
+            this.$wkToast(res.data.message, {
+              horizontalPosition: 'right',
+              verticalPosition: 'top',
+              transition: 'fade',
+            })
+          })
+          .catch(error => {
+            console.log(error);
           })
     }
 

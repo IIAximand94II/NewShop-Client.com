@@ -34,6 +34,11 @@ const router = createRouter({
       name: 'checkout.index',
     },
     {
+      path: '/order/:id',
+      component: () => import('../views/order/IndexComponent.vue'),
+      name: 'order.index',
+    },
+    {
       path: '/product/:id',
       component: () => import('../views/product/IndexComponent.vue'),
       name: 'product.index',
@@ -93,9 +98,9 @@ router.beforeEach((to, from, next) => {
     }
 
 
-    if(to.name === 'checkout.index' && !Token){
-      return next({ name:'user.login' })
-    }
+    // if(to.name === 'checkout.index' && !Token){
+    //   return next({ name:'user.login' })
+    // }
   }
 
 
@@ -104,9 +109,6 @@ router.beforeEach((to, from, next) => {
     return next({ name:'user.personal' })
   }
 
-  // if((to.name === 'user.login' && from.name === 'cart.index') && Token){
-  //   return next({ name:'checkout.index'})
-  // }
 
 
   next()

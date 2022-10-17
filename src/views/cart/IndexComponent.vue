@@ -52,9 +52,9 @@
                           {{ product.product_info.size.size }}
                         </td>
                         <td>
-                          {{ product.product_info.qty }}
+                          {{ product.qty }}
                         </td>
-                        <td class="">${{ product.product_info.total_price }}</td>
+                        <td class="">${{ product.total }}</td>
                         <td class="">
                           <a class="product-remove" @click.prevent="removeProduct(product)" href="#!">Remove</a>
                         </td>

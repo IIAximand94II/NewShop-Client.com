@@ -4,7 +4,6 @@
       <thead>
       <tr>
         <th>Country</th>
-        <th>State</th>
         <th>City</th>
         <th>Street</th>
         <th>House</th>
@@ -16,7 +15,6 @@
       <tbody>
       <tr>
         <td><input type="text" v-model="country" class="form-control address-input"></td>
-        <td><input type="text" v-model="state" class="form-control address-input"></td>
         <td><input type="text" v-model="city" class="form-control address-input"></td>
         <td><input type="text" v-model="street" class="form-control address-input"></td>
         <td><input type="text" v-model="house" class="form-control address-input"></td>
@@ -37,7 +35,6 @@ export default {
   data(){
     return{
       country:'',
-      state:'',
       city:'',
       street:'',
       house:null,
@@ -54,7 +51,6 @@ export default {
     addAddress(){
       let data = new FormData();
       data.append('country', this.country);
-      data.append('state', this.state);
       data.append('city', this.city);
       data.append('street', this.street);
       data.append('house', this.house);

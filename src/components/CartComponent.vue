@@ -16,7 +16,7 @@
               <span>{{ product.qty }} x</span>
               <span>{{ product.price }}</span>
             </div>
-            <h5><strong>${{ product.total_price }}</strong></h5>
+            <h5><strong>${{ product.total }}</strong></h5>
           </div>
           <a href="#!" @click.prevent="removeProduct(product)" class="remove"><i class="tf-ion-close"></i></a>
         </div>
@@ -54,7 +54,11 @@ export default {
   },
 
   computed:{
-
+    // getTotal(){
+    //   // this.cartProducts.forEach(elem => {
+    //   //   this.cartSum += elem.total_price;
+    //   // })
+    // }
   },
 
   methods:{
